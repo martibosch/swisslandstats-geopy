@@ -1,0 +1,4 @@
+matplotlib
+numpy
+pandas >= 0.17.0
+rasterio
