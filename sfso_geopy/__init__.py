@@ -6,6 +6,8 @@ import rasterio
 
 from rasterio.transform import from_origin
 
+from . import plotting
+
 DEFAULT_INDEX_COLUMN = 'RELI'
 DEFAULT_CRS = {'init': 'epsg:21781'}
 DEFAULT_RES = (100, 100)
@@ -55,6 +57,11 @@ class SFSOGeoDataFrame(pd.DataFrame):
                            transform=self.transform) as raster:
 
             raster.write(lulc_arr.astype(dtype), 1)
+
+    def plot(self, column, cmap=None, *args, **kwargs):
+        # TODO: automatically assign cmaps according to columns
+        lulc_arr = self.to_ndarray(column)
+        return plotting.plot_ndarray(lulc_arr, cmap=cmap, *args, **kwargs)
 
 
 def read_csv(filepath_or_buffer, crs=None, res=None, *args, **kwargs):
