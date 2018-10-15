@@ -13,10 +13,7 @@ DEFAULT_CRS = {'init': 'epsg:21781'}
 DEFAULT_RES = (100, 100)
 
 
-class SFSOGeoDataFrame(pd.DataFrame):
-    """Documentation for SFSOGeoDataFrame
-
-    """
+class SLSDataFrame(pd.DataFrame):
 
     # so that pandas can allow setting this class attributes
     _metadata = ['crs', 'res']
@@ -24,7 +21,7 @@ class SFSOGeoDataFrame(pd.DataFrame):
     def __init__(self, *args, **kwargs):
         crs = kwargs.pop('crs', DEFAULT_CRS)
         res = kwargs.pop('res', DEFAULT_RES)
-        super(SFSOGeoDataFrame, self).__init__(*args, **kwargs)
+        super(SLSDataFrame, self).__init__(*args, **kwargs)
         self.set_index(DEFAULT_INDEX_COLUMN, inplace=True)
         self.crs = crs
         self.res = res
@@ -70,4 +67,4 @@ def read_csv(filepath_or_buffer, crs=None, res=None, *args, **kwargs):
     if res:
         kwargs['res'] = res
     df = pd.read_csv(filepath_or_buffer, *args, **kwargs)
-    return SFSOGeoDataFrame(df, *args, **kwargs)
+    return SLSDataFrame(df, *args, **kwargs)
