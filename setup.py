@@ -16,17 +16,20 @@ def setup_package():
     reqs = _get_requirements_from_files({'base': 'requirements.txt'})
     install_reqs = reqs.pop('base')
 
+    # yapf: disable
     setup(
-        name='sfso_geopy',
+        name='swisslandstats-geopy',
         version='0.1',
-        description='foo',
-        url='https://github.com/martibosch/sfso_geopy',
+        description='Python for the land statistics datasets from the SFSO',
+        url='https://github.com/martibosch/swisslandstats-geopy',
         author='Martí Bosch',
         author_email='marti.bosch@epfl.ch',
         licence='BSD',
-        packages=['sfso_geopy'],
+        packages=['swisslandstats'],
         install_requires=install_reqs,
-        zip_safe=False)
+        zip_safe=False
+    )
+    # yapf: enable
 
 
 if __name__ == '__main__':
