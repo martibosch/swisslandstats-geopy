@@ -23,7 +23,8 @@ class SLSDataFrame(pd.DataFrame):
         crs = kwargs.pop('crs', settings.DEFAULT_CRS)
         res = kwargs.pop('res', settings.DEFAULT_RES)
         super(SLSDataFrame, self).__init__(*args, **kwargs)
-        self.set_index(settings.DEFAULT_INDEX_COLUMN, inplace=True)
+        if self.index.name != self.index_column:
+            self.set_index(self.index_column, inplace=True)
         self.crs = crs
         self.res = res
 
@@ -60,6 +61,22 @@ class SLSDataFrame(pd.DataFrame):
         # TODO: automatically assign cmaps according to columns
         lulc_arr = self.to_ndarray(column)
         return plotting.plot_ndarray(lulc_arr, cmap=cmap, *args, **kwargs)
+
+    def __getitem__(self, key):
+        result = super(SLSDataFrame, self).__getitem__(key)
+        if isinstance(result, pd.DataFrame):
+            # TODO: check that there is at least one column of land statistics
+            if self.x_column in result and self.y_column in result:
+                result.__class__ = SLSDataFrame
+                result.crs = self.crs
+                result.res = self.res
+            else:
+                result.__class__ = pd.DataFrame
+        return result
+
+    @property
+    def _constructor(self):
+        return SLSDataFrame
 
 
 def read_csv(filepath_or_buffer, crs=None, res=None, *args, **kwargs):
