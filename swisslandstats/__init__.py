@@ -7,10 +7,7 @@ import rasterio
 from rasterio.transform import from_origin
 
 from . import plotting
-
-DEFAULT_INDEX_COLUMN = 'RELI'
-DEFAULT_CRS = {'init': 'epsg:21781'}
-DEFAULT_RES = (100, 100)
+from . import settings
 
 
 class SLSDataFrame(pd.DataFrame):
@@ -18,17 +15,21 @@ class SLSDataFrame(pd.DataFrame):
     # so that pandas can allow setting this class attributes
     _metadata = ['crs', 'res']
 
+    index_column = settings.DEFAULT_INDEX_COLUMN
+    x_column = settings.DEFAULT_X_COLUMN
+    y_column = settings.DEFAULT_Y_COLUMN
+
     def __init__(self, *args, **kwargs):
-        crs = kwargs.pop('crs', DEFAULT_CRS)
-        res = kwargs.pop('res', DEFAULT_RES)
+        crs = kwargs.pop('crs', settings.DEFAULT_CRS)
+        res = kwargs.pop('res', settings.DEFAULT_RES)
         super(SLSDataFrame, self).__init__(*args, **kwargs)
-        self.set_index(DEFAULT_INDEX_COLUMN, inplace=True)
+        self.set_index(settings.DEFAULT_INDEX_COLUMN, inplace=True)
         self.crs = crs
         self.res = res
 
     def to_ndarray(self, column, nodata=0, dtype=np.uint8):
-        x = self['X'].values
-        y = self['Y'].values
+        x = self[self.x_column].values
+        y = self[self.y_column].values
         z = self[column].values
 
         xres, yres = self.res
