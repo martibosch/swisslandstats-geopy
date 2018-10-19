@@ -18,6 +18,9 @@ def setup_package():
     reqs = _get_requirements_from_files({'base': 'requirements.txt'})
     install_reqs = reqs.pop('base')
 
+    # Extra dependences for geometric operations
+    geo = ["geopandas"]
+
     # yapf: disable
     setup(
         name='swisslandstats-geopy',
@@ -29,6 +32,7 @@ def setup_package():
         licence='BSD',
         packages=['swisslandstats'],
         install_requires=install_reqs,
+        extras_require={'geo': geo},
         zip_safe=False
     )
     # yapf: enable
