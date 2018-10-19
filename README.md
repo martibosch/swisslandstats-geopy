@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/martibosch/swisslandstats-geopy.svg?token=AdqNpn2z1w9P1qtcys7B&branch=master)](https://travis-ci.com/martibosch/swisslandstats-geopy)
+
 # swisslandstats-geopy
 
 Python tools for the [Swiss Land Statistics datasets from the Swiss Federal Statistical Office](https://www.bfs.admin.ch/bfs/fr/home/services/geostat/geodonnees-statistique-federale/sol-utilisation-couverture/statistique-suisse-superficie.html) (link in French)
@@ -19,7 +21,6 @@ More information can be found in the [Swiss Federal Statistical Office page](htt
 
 ## TODO
 
-* tests
 * add missing colormaps
   * automatically assign columns to cmaps when plotting
 * exceptions for no land use/land cover columns
