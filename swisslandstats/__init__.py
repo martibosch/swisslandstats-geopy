@@ -6,6 +6,7 @@ import rasterio
 
 from rasterio.transform import from_origin
 
+from . import geometry
 from . import plotting
 from . import settings
 

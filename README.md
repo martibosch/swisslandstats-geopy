@@ -24,4 +24,4 @@ More information can be found in the [Swiss Federal Statistical Office page](htt
   * automatically assign columns to cmaps when plotting
 * exceptions for no land use/land cover columns
 * cache colum ndarrays as class attributes?
-* filter by canton/municipality or geopolygon in general (with geopandas)
+* clip by nominatim query via `osmnx`
