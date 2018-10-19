@@ -1,0 +1,31 @@
+language: python
+python:
+ - 2.7
+ - 3.6
+
+before_install:
+ - pip install --upgrade pip
+ - pip install --upgrade wheel
+ - wget http://bit.ly/miniconda -O miniconda.sh
+ - bash miniconda.sh -b -p $HOME/miniconda
+ - export PATH="$HOME/miniconda/bin:$PATH"
+ - hash -r
+ - conda config --set always_yes yes --set show_channel_urls true
+ - conda update conda
+ - conda config --add channels conda-forge --force
+ - conda create --quiet --name TESTENV python=$TRAVIS_PYTHON_VERSION
+ - source activate TESTENV
+ - conda install -c conda-forge/label/dev geopandas
+ - conda info --all
+ - conda list
+
+install:
+ - pip install .[geo]
+ - pip install -r requirements-dev.txt
+ - pip show swisslandstats-geopy
+
+script: coverage run --source swisslandstats -m pytest --verbose
+
+after_success:
+ - coverage report -m
+ - coveralls
