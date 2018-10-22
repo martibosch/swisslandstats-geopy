@@ -25,4 +25,4 @@ More information can be found in the [Swiss Federal Statistical Office page](htt
   * automatically assign columns to cmaps when plotting
 * exceptions for no land use/land cover columns
 * cache colum ndarrays as class attributes?
-* clip by nominatim query via `osmnx`
+* implement methods to merge DataFrames from multiple csv files
