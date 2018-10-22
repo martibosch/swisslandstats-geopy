@@ -9,12 +9,12 @@ from rasterio.transform import from_origin
 from . import plotting
 from . import settings
 
-__all__ = ['SLSDataFrame', 'read_csv']
+__all__ = ['LandDataFrame', 'read_csv']
 
 
-class SLSDataFrame(pd.DataFrame):
+class LandDataFrame(pd.DataFrame):
     """
-    A SLSDataFrame object is a pandas.DataFrame extended to deal with the land
+    A LandDataFrame object is a pandas.DataFrame extended to deal with the land
     statistics files provided by the Swiss Federal Statistical Office (SFSO).
     Each row of a SLSDataFrame represents a pixel of a raster landscape, with
     the 'x' and 'y' that depict the centroid of the pixel, as well as a set of
@@ -41,7 +41,7 @@ class SLSDataFrame(pd.DataFrame):
     def __init__(self, *args, **kwargs):
         crs = kwargs.pop('crs', settings.DEFAULT_CRS)
         res = kwargs.pop('res', settings.DEFAULT_RES)
-        super(SLSDataFrame, self).__init__(*args, **kwargs)
+        super(LandDataFrame, self).__init__(*args, **kwargs)
         if self.index.name != self.index_column:
             self.set_index(self.index_column, inplace=True)
         self.crs = crs
@@ -115,11 +115,11 @@ class SLSDataFrame(pd.DataFrame):
     plot.__doc__ = plotting.plot_ndarray.__doc__
 
     def __getitem__(self, key):
-        result = super(SLSDataFrame, self).__getitem__(key)
+        result = super(LandDataFrame, self).__getitem__(key)
         if isinstance(result, pd.DataFrame):
             # TODO: check that there is at least one column of land statistics
             if self.x_column in result and self.y_column in result:
-                result.__class__ = SLSDataFrame
+                result.__class__ = LandDataFrame
                 result.crs = self.crs
                 result.res = self.res
             else:
@@ -128,7 +128,7 @@ class SLSDataFrame(pd.DataFrame):
 
     @property
     def _constructor(self):
-        return SLSDataFrame
+        return LandDataFrame
 
 
 def read_csv(filepath_or_buffer, crs=None, res=None, *args, **kwargs):
@@ -150,11 +150,11 @@ def read_csv(filepath_or_buffer, crs=None, res=None, *args, **kwargs):
 
     Returns
     -------
-    result : SLSDataFrame
+    result : LandDataFrame
     """
     if crs:
         kwargs['crs'] = crs
     if res:
         kwargs['res'] = res
     df = pd.read_csv(filepath_or_buffer, *args, **kwargs)
-    return SLSDataFrame(df, *args, **kwargs)
+    return LandDataFrame(df, *args, **kwargs)
