@@ -3,7 +3,7 @@ import numpy as np
 
 from matplotlib import colors
 
-__all__ = ['noas04_4_cmap']
+__all__ = ['noas04_4_cmap', 'plot_ndarray']
 
 _nodata_c = (1, 1, 1, 0)  # transparent white
 _noas04_4_cdict = {  # based on Corine's land cover nomenclature Level 1
