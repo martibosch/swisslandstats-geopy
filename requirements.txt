@@ -1,4 +1,4 @@
 matplotlib
 numpy
 pandas >= 0.17.0
-rasterio
+rasterio >= 1.0.0
