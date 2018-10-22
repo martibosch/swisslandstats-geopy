@@ -32,7 +32,7 @@ def test_slsdataframe():
     sdf.to_geotiff(tempfile.TemporaryFile(), 'AS09_4')
 
     assert type(sdf[[sdf.x_column, sdf.y_column,
-                     'AS09_4']]) == sls.SLSDataFrame
+                     'AS09_4']]) == sls.LandDataFrame
     assert type(sdf[[sdf.x_column, 'AS09_4']]) == pd.DataFrame
     assert type(sdf['AS09_4']) == pd.Series
 

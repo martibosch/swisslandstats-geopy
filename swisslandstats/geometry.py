@@ -20,13 +20,13 @@ from . import settings
 __all__ = ['clip_by_geometry', 'clip_by_nominatim']
 
 
-def clip_by_geometry(sdf, geometry, geometry_crs=None):
+def clip_by_geometry(ldf, geometry, geometry_crs=None):
     """
-    Clip a SLSDataFrame by a geometry
+    Clip a LandDataFrame by a geometry
 
     Parameters
     ----------
-    sdf : SLSDataFrame
+    ldf : LandDataFrame
         landscape statistics dataframe
     geometry : shapely Polygon or MultiPolygon
         the geometry used to clip the dataframe
@@ -36,33 +36,33 @@ def clip_by_geometry(sdf, geometry, geometry_crs=None):
 
     Returns
     -------
-    result : SLSDataFrame
+    result : LandDataFrame
     """
     if geometry_crs is None:
         geometry_crs = settings.DEFAULT_CRS
 
     if gpd:
         # TODO: it'd be cool to 'cache' the GeoSeries (maybe as an
-        # attribute of SLSDataFrame)
+        # attribute of LandDataFrame)
 
         # alternative with osmnx (slower though):
-        # geometry = ox.project_geometry(geometry, to_crs=ls_sdf.crs)
-        if geometry_crs != sdf.crs:
+        # geometry = ox.project_geometry(geometry, to_crs=ls_ldf.crs)
+        if geometry_crs != ldf.crs:
             geometry = transform(
                 partial(pyproj.transform, pyproj.Proj(**geometry_crs),
-                        pyproj.Proj(**sdf.crs)), geometry)
+                        pyproj.Proj(**ldf.crs)), geometry)
 
         # first clip by polygon bounds without geopandas
         xmin, ymin, xmax, ymax = geometry.bounds
-        x_column, y_column = sdf.x_column, sdf.y_column
-        bounds_sdf = sdf[(sdf[x_column] > xmin) & (sdf[x_column] < xmax) &
-                         (sdf[y_column] > ymin) & (sdf[y_column] < ymax)]
+        x_column, y_column = ldf.x_column, ldf.y_column
+        bounds_ldf = ldf[(ldf[x_column] > xmin) & (ldf[x_column] < xmax) &
+                         (ldf[y_column] > ymin) & (ldf[y_column] < ymax)]
 
         gser = gpd.GeoSeries(
-            map(Point, bounds_sdf[[x_column, y_column]].values),
-            index=bounds_sdf.index)
+            map(Point, bounds_ldf[[x_column, y_column]].values),
+            index=bounds_ldf.index)
 
-        return bounds_sdf[gser.within(geometry)]
+        return bounds_ldf[gser.within(geometry)]
 
     else:
         # warn about missing dependences
@@ -76,14 +76,14 @@ def clip_by_geometry(sdf, geometry, geometry_crs=None):
             "about installing geopandas")
 
 
-def clip_by_nominatim(sdf, query, which_result=1):
+def clip_by_nominatim(ldf, query, which_result=1):
     """
-    Clip a SLSDataFrame by a single place name query to Nominatim. See also
+    Clip a LandDataFrame by a single place name query to Nominatim. See also
     the documentation for `osmnx.gdf_from_place`
 
     Parameters
     ----------
-    sdf : SLSDataFrame
+    ldf : LandDataFrame
         landscape statistics dataframe
     query : string or dict
         query string or structured query dict to geocode/download
@@ -92,7 +92,7 @@ def clip_by_nominatim(sdf, query, which_result=1):
 
     Returns
     -------
-    result : SLSDataFrame
+    result : LandDataFrame
     """
     if ox:
         try:
@@ -103,7 +103,7 @@ def clip_by_nominatim(sdf, query, which_result=1):
                 'OSM returned no results (or fewer than which_result) for '
                 'query "{}"'.format(query))
 
-        return clip_by_geometry(sdf, geometry,
+        return clip_by_geometry(ldf, geometry,
                                 geometry_crs=ox.settings.default_crs)
     else:
         # warn about missing dependences
