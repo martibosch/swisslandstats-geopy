@@ -11,6 +11,8 @@ except ImportError:
 
 from . import settings
 
+__all__ = ['clip_by_geometry']
+
 
 def clip_by_geometry(sdf, geometry, geometry_crs=settings.DEFAULT_CRS):
     if gpd:
