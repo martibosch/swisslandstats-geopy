@@ -13,6 +13,23 @@ __all__ = ['SLSDataFrame', 'read_csv']
 
 
 class SLSDataFrame(pd.DataFrame):
+    """
+    A SLSDataFrame object is a pandas.DataFrame extended to deal with the land
+    statistics files provided by the Swiss Federal Statistical Office (SFSO).
+    Each row of a SLSDataFrame represents a pixel of a raster landscape, with
+    the 'x' and 'y' that depict the centroid of the pixel, as well as a set of
+    land use/land cover (LULC) information columns.
+
+    The default parameters are defined to work with SFSO data out-of-the-box,
+    but they can be modified through the following keyword arguments:
+
+    Keyword Arguments
+    -----------------
+    crs : dict
+        Coordinate system. The default is ``{'init': 'epsg:21781'}``
+    res : tuple
+        The (x, y) resolution of the dataset. The default is ``(100, 100)``
+    """
 
     # so that pandas can allow setting this class attributes
     _metadata = ['crs', 'res']
@@ -31,6 +48,23 @@ class SLSDataFrame(pd.DataFrame):
         self.res = res
 
     def to_ndarray(self, column, nodata=0, dtype=np.uint8):
+        """
+        Convert a LULC column to a numpy array
+
+        Parameters
+        ----------
+        column : str
+            name of the LULC column
+        nodata : numeric
+            value to be assigned to pixels with no data
+        dtype : str or numpy dtype
+            the data type
+
+        Returns
+        -------
+        lulc_arr : np.ndarray
+            A LULC array
+        """
         x = self[self.x_column].values
         y = self[self.y_column].values
         z = self[column].values
@@ -50,6 +84,21 @@ class SLSDataFrame(pd.DataFrame):
         return lulc_arr.astype(dtype)
 
     def to_geotiff(self, fp, column, nodata=0, dtype=rasterio.uint8):
+        """
+        Export a LULC column to a GeoTIFF file
+
+        Parameters
+        ----------
+        fp : str, file object or pathlib.Path object
+            A filename or URL, a file object opened in binary ('rb') mode,
+            or a Path object.
+        column : str
+            name of the LULC column
+        nodata : numeric
+            value to be assigned to pixels with no data
+        dtype : str or numpy dtype
+            the data type
+        """
         lulc_arr = self.to_ndarray(column, nodata, dtype)
 
         with rasterio.open(fp, 'w', driver='GTiff', height=lulc_arr.shape[0],
@@ -62,6 +111,8 @@ class SLSDataFrame(pd.DataFrame):
         # TODO: automatically assign cmaps according to columns
         lulc_arr = self.to_ndarray(column)
         return plotting.plot_ndarray(lulc_arr, cmap=cmap, *args, **kwargs)
+
+    plot.__doc__ = plotting.plot_ndarray.__doc__
 
     def __getitem__(self, key):
         result = super(SLSDataFrame, self).__getitem__(key)
@@ -81,6 +132,26 @@ class SLSDataFrame(pd.DataFrame):
 
 
 def read_csv(filepath_or_buffer, crs=None, res=None, *args, **kwargs):
+    """
+    Convert a LULC column to a numpy array. See also the documentation for
+    `pandas.read_csv`.
+
+    Parameters
+    ----------
+    filepath_or_buffer : str, pathlib.Path, py._path.local.LocalPath or any \
+    object with a read() method (such as a file handle or StringIO)
+        The string could be a URL. Valid URL schemes include http, ftp, s3, and
+        file. For file URLs, a host is expected. For instance, a local file
+        could be file://localhost/path/to/table.csv
+    crs : str
+        Coordinate system. The default is ``'epsg:21781'``
+    res : tuple
+        The (x, y) resolution of the dataset. The default is ``(100, 100)``
+
+    Returns
+    -------
+    result : SLSDataFrame
+    """
     if crs:
         kwargs['crs'] = crs
     if res:
