@@ -20,7 +20,27 @@ from . import settings
 __all__ = ['clip_by_geometry', 'clip_by_nominatim']
 
 
-def clip_by_geometry(sdf, geometry, geometry_crs=settings.DEFAULT_CRS):
+def clip_by_geometry(sdf, geometry, geometry_crs=None):
+    """
+    Clip a SLSDataFrame by a geometry
+
+    Parameters
+    ----------
+    sdf : SLSDataFrame
+        landscape statistics dataframe
+    geometry : shapely Polygon or MultiPolygon
+        the geometry used to clip the dataframe
+    crs : dict, optional
+        the starting coordinate reference system of the passed-in geometry.
+        If not given, it will take the default crs from the settings.
+
+    Returns
+    -------
+    result : SLSDataFrame
+    """
+    if geometry_crs is None:
+        geometry_crs = settings.DEFAULT_CRS
+
     if gpd:
         # TODO: it'd be cool to 'cache' the GeoSeries (maybe as an
         # attribute of SLSDataFrame)
@@ -57,6 +77,23 @@ def clip_by_geometry(sdf, geometry, geometry_crs=settings.DEFAULT_CRS):
 
 
 def clip_by_nominatim(sdf, query, which_result=1):
+    """
+    Clip a SLSDataFrame by a single place name query to Nominatim. See also
+    the documentation for `osmnx.gdf_from_place`
+
+    Parameters
+    ----------
+    sdf : SLSDataFrame
+        landscape statistics dataframe
+    query : string or dict
+        query string or structured query dict to geocode/download
+    which_result : int
+        max number of results to return and which to process upon receipt
+
+    Returns
+    -------
+    result : SLSDataFrame
+    """
     if ox:
         try:
             geometry = ox.gdf_from_place(
