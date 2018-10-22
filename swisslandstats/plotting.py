@@ -20,6 +20,27 @@ noas04_4_cmap = colors.ListedColormap([
 
 
 def plot_ndarray(arr, cmap=None, ax=None, legend=False, figsize=None):
+    """
+    Plot an array
+
+    Parameters
+    ----------
+    arr : array-like
+        data to be displayed
+    cmap : str or `~matplotlib.colors.Colormap`, optional
+        A Colormap instance
+    ax : axis object, optional
+        Plot in given axis; if None creates a new figure
+    legend : bool, optional
+        If ``True``, display the legend
+    figsize: tuple of two ints, optional
+        Size of the figure to create.
+
+    Returns
+    -------
+    ax : matplotlib axis
+        axis with plot data
+    """
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
     ax.set_aspect('equal')
