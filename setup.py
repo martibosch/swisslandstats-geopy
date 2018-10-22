@@ -1,5 +1,17 @@
 from setuptools import setup
 
+long_description = """
+Python tools for the Swiss Land Statistics datasets from the Swiss Federal
+Statistical Office. The current features are:
+* Automatically transform files from the Swiss Federal Statistical Office into
+  dataframes
+* Transform categorical land use/land cover information into numpy arrays and
+  GeoTIFF files
+* Plot categorical land use/land cover information with legend and the
+  appropriate color map
+* Clip dataframes by vector geometries
+"""
+
 
 def _get_requirements_from_files(groups_files):
     groups_reqlist = {}
@@ -24,10 +36,12 @@ def setup_package():
         name='swisslandstats-geopy',
         version='0.1',
         description='Python for the land statistics datasets from the SFSO',
+        long_description=long_description,
+        long_description_content_type='text/markdown',
         url='https://github.com/martibosch/swisslandstats-geopy',
         author='Martí Bosch',
         author_email='marti.bosch@epfl.ch',
-        licence='BSD',
+        license='GPL-3.0',
         packages=['swisslandstats'],
         install_requires=install_reqs,
         extras_require={'geo': geo},
