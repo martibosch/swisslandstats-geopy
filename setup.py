@@ -17,7 +17,7 @@ def setup_package():
     install_reqs = reqs.pop('base')
 
     # Extra dependences for geometric operations
-    geo = ["geopandas"]
+    geo = ["geopandas", "osmnx"]
 
     # yapf: disable
     setup(
