@@ -37,7 +37,7 @@ def test_slsdataframe():
     assert type(sdf['AS09_4']) == pd.Series
 
 
-def test_clip_by_geometry():
+def test_geometry():
     from shapely.geometry import Polygon
 
     sdf = sls.read_csv('tests/input_data/dataset.csv')
@@ -45,3 +45,6 @@ def test_clip_by_geometry():
 
     clipped_sdf = sls.clip_by_geometry(sdf, geometry)
     assert len(clipped_sdf) == 1
+
+    clipped_sdf = sls.clip_by_nominatim(sdf, 'Lausanne, Switzerland')
+    assert len(clipped_sdf) == 0
