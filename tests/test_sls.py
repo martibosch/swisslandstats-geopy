@@ -27,28 +27,29 @@ def test_slsdataframe():
     import numpy as np
     import pandas as pd
 
-    sdf = sls.read_csv('tests/input_data/dataset.csv')
+    ldf = sls.read_csv('tests/input_data/dataset.csv')
 
     assert np.all(
-        sdf.to_ndarray('AS09_4') == np.arange(4, dtype=np.uint8).reshape(2, 2))
-    sdf.to_geotiff(tempfile.TemporaryFile(), 'AS09_4')
+        ldf.to_ndarray('AS09_4') == np.arange(4, dtype=np.uint8).reshape(2, 2))
+    ldf.to_geotiff(tempfile.TemporaryFile(), 'AS09_4')
 
     assert isinstance(
-        sdf.plot('AS09_4', cmap=sls.noas04_4_cmap, legend=True), plt.Axes)
+        ldf.plot('AS09_4', cmap=sls.noas04_4_cmap, legend=True), plt.Axes)
 
-    assert type(sdf[[sdf.x_column, sdf.y_column,
-                     'AS09_4']]) == sls.SLSDataFrame
-    assert type(sdf[[sdf.x_column, 'AS09_4']]) == pd.DataFrame
-    assert type(sdf['AS09_4']) == pd.Series
+    assert type(ldf[[ldf.x_column, ldf.y_column,
+                     'AS09_4']]) == sls.LandDataFrame
+    assert type(ldf[[ldf.x_column, 'AS09_4']]) == pd.DataFrame
+    assert type(ldf['AS09_4']) == pd.Series
+
 
 def test_geometry():
     from shapely.geometry import Polygon
 
-    sdf = sls.read_csv('tests/input_data/dataset.csv')
+    ldf = sls.read_csv('tests/input_data/dataset.csv')
     geometry = Polygon([(0, 0), (0, 150), (150, 150), (150, 0)])
 
-    clipped_sdf = sls.clip_by_geometry(sdf, geometry)
-    assert len(clipped_sdf) == 1
+    clipped_ldf = sls.clip_by_geometry(ldf, geometry)
+    assert len(clipped_ldf) == 1
 
-    clipped_sdf = sls.clip_by_nominatim(sdf, 'Lausanne, Switzerland')
-    assert len(clipped_sdf) == 0
+    clipped_ldf = sls.clip_by_nominatim(ldf, 'Lausanne, Switzerland')
+    assert len(clipped_ldf) == 0
