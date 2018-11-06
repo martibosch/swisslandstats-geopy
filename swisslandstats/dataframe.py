@@ -6,6 +6,7 @@ import rasterio
 
 from rasterio.transform import from_origin
 
+from . import geometry as sls_geometry
 from . import plotting
 from . import settings
 
@@ -113,6 +114,18 @@ class LandDataFrame(pd.DataFrame):
         return plotting.plot_ndarray(lulc_arr, cmap=cmap, *args, **kwargs)
 
     plot.__doc__ = plotting.plot_ndarray.__doc__
+
+    def clip_by_geometry(self, geometry, geometry_crs=None):
+        return sls_geometry.clip_by_geometry(self, geometry,
+                                             geometry_crs=geometry_crs)
+
+    clip_by_geometry.__doc__ = sls_geometry.clip_by_geometry.__doc__
+
+    def clip_by_nominatim(self, query, which_result=1):
+        return sls_geometry.clip_by_nominatim(self, query,
+                                              which_result=which_result)
+
+    clip_by_nominatim.__doc__ = sls_geometry.clip_by_nominatim.__doc__
 
     def __getitem__(self, key):
         result = super(LandDataFrame, self).__getitem__(key)

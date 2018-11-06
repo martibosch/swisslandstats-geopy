@@ -48,8 +48,8 @@ def test_geometry():
     ldf = sls.read_csv('tests/input_data/dataset.csv')
     geometry = Polygon([(0, 0), (0, 150), (150, 150), (150, 0)])
 
-    clipped_ldf = sls.clip_by_geometry(ldf, geometry)
+    clipped_ldf = ldf.clip_by_geometry(geometry)
     assert len(clipped_ldf) == 1
 
-    clipped_ldf = sls.clip_by_nominatim(ldf, 'Lausanne, Switzerland')
+    clipped_ldf = ldf.clip_by_nominatim('Lausanne, Switzerland')
     assert len(clipped_ldf) == 0
