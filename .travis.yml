@@ -1,31 +1,40 @@
 language: python
 python:
- - 2.7
- - 3.6
+  - 2.7
+  - 3.6
 
 before_install:
- - pip install --upgrade pip
- - pip install --upgrade wheel
- - wget http://bit.ly/miniconda -O miniconda.sh
- - bash miniconda.sh -b -p $HOME/miniconda
- - export PATH="$HOME/miniconda/bin:$PATH"
- - hash -r
- - conda config --set always_yes yes --set show_channel_urls true
- - conda update conda
- - conda config --add channels conda-forge --force
- - conda create --quiet --name TESTENV python=$TRAVIS_PYTHON_VERSION
- - source activate TESTENV
- - conda install -c conda-forge/label/dev geopandas
- - conda info --all
- - conda list
+  - pip install --upgrade pip
+  - pip install --upgrade wheel
+  - wget http://bit.ly/miniconda -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set show_channel_urls true
+  - conda update conda
+  - conda config --add channels conda-forge --force
+  - conda create --quiet --name TESTENV python=$TRAVIS_PYTHON_VERSION
+  - source activate TESTENV
+  - conda install -c conda-forge/label/dev geopandas
+  - conda info --all
+  - conda list
 
 install:
- - pip install .[geo]
- - pip install -r requirements-dev.txt
- - pip show swisslandstats-geopy
+  - pip install .[geo]
+  - pip install -r requirements-dev.txt
+  - pip show swisslandstats-geopy
 
 script: coverage run --source swisslandstats -m pytest --verbose
 
 after_success:
- - coverage report -m
- - coveralls
+  - coverage report -m
+  - coveralls
+
+deploy:
+  provider: pypi
+  user: martibosch
+  password:
+    secure: "hp4mIxP3nX/uDSGZu9P/kH6uidLdsa03k66VqZfRgL3zNUmgMTZO2QgNmB/nd3V7VYtJL7OKXhobPbnI1pQWLYlysRYgtme4dScIe5eleUDZfphg8Ac12eibyhDkDGBEgbD9XV+6fEZZ9rrx7fFNA1FvqaBvqsBRMiN3bIErIuV/Dskr5oq+jdgLiZvKY1XrWZmTB0IsrXskBIcwU7hdJ5iYvlorTTi4HskuEzeTI0jCYayd+FaO/NfV6vdT/vOl/hoiQ6HjDPTy8bvFc02umArcsohqRoKJusM1T/FwnJUwFGLgmKIC6rNniNx9v/HMGbd2UfDXZEjHW4w7sJCxgb70pMKX0ZnyRsQt7cP7mhOcjiGaILC+axQhDZfFvE/h6wQHIzwczMed8jJ63Y1XqwfxQKhJt11VZrNTH8jgbQUXMlvpauHda2nU9YrKllJptdDW/k8QQo4TMlncqGt3UWayf08iP+4ECRCfc42kEEJ3bL9fPdHugbInhmbpuIbzGnzmj/NVM/4XRQRHSTkpDcPwTKxUUuoQzyQK7octdCrIzWlyULcJ/YDFpySk8YFycrJTZu4X/l1qVzCEdEJHAuFcYURXzn9amvxtNumYMeoRS0jCGqbCHnIJbl29o9r63fjVZ5i+px33lEP72k63HsDMJv+O3HUAz6F0EypS2U8="
+  on:
+    tags: true
+    branch: master
