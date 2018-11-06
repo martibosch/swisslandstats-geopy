@@ -41,17 +41,18 @@ def plot_ndarray(arr, cmap=None, ax=None, legend=False, figsize=None):
     ax : matplotlib axis
         axis with plot data
     """
+    if cmap is None:
+        cmap = plt.get_cmap('terrain')
+
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
     ax.set_aspect('equal')
 
-    ax.imshow(arr, cmap=cmap)
+    im = ax.imshow(arr, cmap=cmap)
 
     if legend:
-        classes = np.unique(arr.ravel())
-
-        for cl in classes:
-            ax.plot(0, 0, '-', c=noas04_4_cmap(cl), label=cl)
+        for class_val in np.unique(arr.ravel()):
+            ax.plot(0, 0, 'o', c=cmap(im.norm(class_val)), label=class_val)
 
         ax.legend()
 
