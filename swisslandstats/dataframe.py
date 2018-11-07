@@ -151,6 +151,7 @@ class LandDataFrame(pd.DataFrame):
 
     clip_by_nominatim.__doc__ = sls_geometry.clip_by_nominatim.__doc__
 
+    # pandas methods
     def __getitem__(self, key):
         result = super(LandDataFrame, self).__getitem__(key)
         if isinstance(result, pd.DataFrame):
@@ -172,6 +173,18 @@ class LandDataFrame(pd.DataFrame):
     @property
     def _constructor(self):
         return LandDataFrame
+
+    # geopandas
+    def get_geoseries(self):
+        return sls_geometry.get_geoseries(self)
+
+    get_geoseries.__doc__ = sls_geometry._get_geoseries_doc % ''
+
+    def to_geodataframe(self, drop_xy_columns=True):
+        return sls_geometry.to_geodataframe(self,
+                                            drop_xy_columns=drop_xy_columns)
+
+    to_geodataframe.__doc__ = sls_geometry._to_geodataframe_doc % ''
 
 
 def merge(left, right, duplicate_columns=False, how='outer', left_index=True,
