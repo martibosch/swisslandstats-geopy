@@ -63,11 +63,13 @@ def test_geometry():
     gser = ldf.get_geoseries()
     assert type(gser) == gpd.GeoSeries
     assert len(ldf) == len(gser)
+    assert ldf.crs == gser.crs
 
     gdf = ldf.to_geodataframe()
     assert type(gdf) == gpd.GeoDataFrame
     assert len(ldf) == len(gdf)
     assert ldf.x_column not in gdf.columns and ldf.y_column not in gdf.columns
+    assert ldf.crs == gdf.crs
 
     # clip methods
     geometry = Polygon([(0, 0), (0, 150), (150, 150), (150, 0)])
