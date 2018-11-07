@@ -1,5 +1,5 @@
 [![PyPI version fury.io](https://badge.fury.io/py/swisslandstats-geopy.svg)](https://pypi.python.org/pypi/swisslandstats-geopy/)
-[![Build Status](https://travis-ci.com/martibosch/swisslandstats-geopy.svg?branch=master)](https://travis-ci.com/martibosch/swisslandstats-geopy)
+[![Build Status](https://travis-ci.org/martibosch/swisslandstats-geopy.svg?branch=master)](https://travis-ci.org/martibosch/swisslandstats-geopy)
 [![Coverage Status](https://coveralls.io/repos/github/martibosch/swisslandstats-geopy/badge.svg?branch=master)](https://coveralls.io/github/martibosch/swisslandstats-geopy?branch=master)
 [![GitHub license](https://img.shields.io/github/license/martibosch/swisslandstats-geopy.svg)](https://github.com/martibosch/swisslandstats-geopy/blob/master/LICENSE.txt)
 
