@@ -17,7 +17,69 @@ except ImportError:
 
 from . import settings
 
-__all__ = ['clip_by_geometry', 'clip_by_nominatim']
+__all__ = [
+    'get_geoseries', 'to_geodataframe', 'clip_by_geometry', 'clip_by_nominatim'
+]
+
+_gpd_warning_msg = """
+The geometry module requires the geopandas package. For better performance, we
+strongly suggest that you install its cythonized version via conda-forge as in:
+conda install -c conda-forge/label/dev geopandas
+See https://github.com/geopandas/geopandas for more information about
+installing geopandas
+"""
+
+_get_geoseries_doc = """
+Get the geometry of the LandDataFrame as a geopandas GeoSeries%s
+
+Returns
+----------
+result : geopandas GeoSeries
+"""
+
+_to_geodataframe_doc = """
+Transform the LandDataFrame to a geopandas GeoDataFrame with the points
+represented by the x and y columns as geometry
+
+Parameters
+----------%s
+drop_xy_columns : boolean, default True
+    whether the LandDataFrame x and y columns should be deleted from the
+    geopandas GeoDataFrame
+
+Returns
+----------
+result : geopandas GeoDataFrame
+"""
+
+
+def get_geoseries(ldf):
+    if gpd:
+        return gpd.GeoSeries(
+            map(Point, ldf[[ldf.x_column, ldf.y_column]].values),
+            index=ldf.index, crs=ldf.crs)
+    else:
+        logging.warning(_gpd_warning_msg)
+
+
+get_geoseries.__doc__ = _get_geoseries_doc % \
+                        '\n\nParameters\n----------\nldf : LandDataFrame'
+
+
+def to_geodataframe(ldf, drop_xy_columns=True):
+    gser = get_geoseries(ldf)
+
+    # if geometry is None, geopandas is not installed and the corresponding
+    # warning has already been logged by get_geoseries
+    if not gser.empty:
+        _ldf = ldf
+        if drop_xy_columns:
+            _ldf = ldf.drop(labels=[ldf.x_column, ldf.y_column], axis=1)
+
+        return gpd.GeoDataFrame(_ldf, geometry=gser)
+
+
+to_geodataframe.__doc__ = _to_geodataframe_doc % '\nldf : LandDataFrame'
 
 
 def clip_by_geometry(ldf, geometry, geometry_crs=None):
@@ -67,13 +129,7 @@ def clip_by_geometry(ldf, geometry, geometry_crs=None):
     else:
         # warn about missing dependences
         # TODO: warn also if using non-cythonized geopandas?
-        logging.warning(
-            "The geometry module requires the geopandas package. "
-            "For better performance, we strongly suggest that you install its "
-            "cythonized version via conda-forge as in\n"
-            "conda install -c conda-forge/label/dev geopandas"
-            "See https://github.com/geopandas/geopandas for more information "
-            "about installing geopandas")
+        logging.warning(_gpd_warning_msg)
 
 
 def clip_by_nominatim(ldf, query, which_result=1):
