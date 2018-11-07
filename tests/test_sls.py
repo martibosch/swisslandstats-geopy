@@ -54,9 +54,22 @@ def test_slsdataframe():
 
 
 def test_geometry():
+    import geopandas as gpd
     from shapely.geometry import Polygon
 
     ldf = sls.read_csv('tests/input_data/dataset.csv')
+
+    # geopandas exports
+    gser = ldf.get_geoseries()
+    assert type(gser) == gpd.GeoSeries
+    assert len(ldf) == len(gser)
+
+    gdf = ldf.to_geodataframe()
+    assert type(gdf) == gpd.GeoDataFrame
+    assert len(ldf) == len(gdf)
+    assert ldf.x_column not in gdf.columns and ldf.y_column not in gdf.columns
+
+    # clip methods
     geometry = Polygon([(0, 0), (0, 150), (150, 150), (150, 0)])
 
     clipped_ldf = ldf.clip_by_geometry(geometry)
