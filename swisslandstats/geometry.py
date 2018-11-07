@@ -108,7 +108,7 @@ def to_geodataframe(ldf, drop_xy_columns=True):
         if drop_xy_columns:
             _ldf = ldf.drop(labels=[ldf.x_column, ldf.y_column], axis=1)
 
-        return gpd.GeoDataFrame(_ldf, geometry=gser)
+        return gpd.GeoDataFrame(_ldf, crs=gser.crs, geometry=gser)
 
 
 to_geodataframe.__doc__ = _to_geodataframe_doc % '\nldf : LandDataFrame'
