@@ -10,7 +10,31 @@ from . import geometry as sls_geometry
 from . import plotting
 from . import settings
 
-__all__ = ['LandDataFrame', 'read_csv']
+__all__ = ['LandDataFrame', 'merge', 'read_csv']
+
+_merge_doc = """
+Merges LandDataFrame objects
+The default parameter values will do an outer join using the indices of both
+dataframes as join keys, and will avoid duplicating columns.
+See also the documentation for `pandas.merge`
+
+Parameters
+----------%s
+right : LandDataFrame
+duplicate_columns : boolean, default True
+how : {'left', 'right', 'outer', 'inner'}, default 'outer'
+    parameter passed to `pandas.merge`
+left_index : boolean, default True
+    parameter passed to `pandas.merge`
+right_index : boolean, default True
+    parameter passed to `pandas.merge`
+**kwargs : additional keyord arguments passed to `pandas.merge`
+
+
+Returns
+-------
+result : LandDataFrame
+"""
 
 
 class LandDataFrame(pd.DataFrame):
@@ -45,8 +69,8 @@ class LandDataFrame(pd.DataFrame):
         super(LandDataFrame, self).__init__(*args, **kwargs)
         if self.index.name != self.index_column:
             self.set_index(self.index_column, inplace=True)
-        self.crs = crs
-        self.res = res
+            self.crs = crs
+            self.res = res
 
     def to_ndarray(self, column, nodata=0, dtype=np.uint8):
         """
@@ -139,9 +163,30 @@ class LandDataFrame(pd.DataFrame):
                 result.__class__ = pd.DataFrame
         return result
 
+    def merge(self, right, duplicate_columns=False, how='outer',
+              left_index=True, right_index=True, **kwargs):
+        return merge(self, right, **kwargs)
+
+    merge.__doc__ = _merge_doc % ''
+
     @property
     def _constructor(self):
         return LandDataFrame
+
+
+def merge(left, right, duplicate_columns=False, how='outer', left_index=True,
+          right_index=True, **kwargs):
+
+    if duplicate_columns:
+        _right = right
+    else:
+        _right = right[right.columns.difference(left.columns)]
+
+    return pd.merge(left, _right, how=how, left_index=left_index,
+                    right_index=right_index, **kwargs)
+
+
+merge.__doc__ = _merge_doc % '\nleft : LandDataFrame'
 
 
 def read_csv(filepath_or_buffer, crs=None, res=None, *args, **kwargs):
