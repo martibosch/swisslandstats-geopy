@@ -30,7 +30,6 @@ right_index : boolean, default True
     parameter passed to `pandas.merge`
 **kwargs : additional keyord arguments passed to `pandas.merge`
 
-
 Returns
 -------
 result : LandDataFrame
@@ -137,19 +136,20 @@ class LandDataFrame(pd.DataFrame):
         lulc_arr = self.to_ndarray(column)
         return plotting.plot_ndarray(lulc_arr, cmap=cmap, *args, **kwargs)
 
-    plot.__doc__ = plotting.plot_ndarray.__doc__
+    plot.__doc__ = plotting._plot_ndarray_doc % \
+        '\ncolumn : str\n    data column to display'
 
     def clip_by_geometry(self, geometry, geometry_crs=None):
         return sls_geometry.clip_by_geometry(self, geometry,
                                              geometry_crs=geometry_crs)
 
-    clip_by_geometry.__doc__ = sls_geometry.clip_by_geometry.__doc__
+    clip_by_geometry.__doc__ = sls_geometry._clip_by_geometry_doc % ''
 
     def clip_by_nominatim(self, query, which_result=1):
         return sls_geometry.clip_by_nominatim(self, query,
                                               which_result=which_result)
 
-    clip_by_nominatim.__doc__ = sls_geometry.clip_by_nominatim.__doc__
+    clip_by_nominatim.__doc__ = sls_geometry._clip_by_nominatim_doc % ''
 
     # pandas methods
     def __getitem__(self, key):

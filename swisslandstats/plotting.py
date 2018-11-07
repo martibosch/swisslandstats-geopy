@@ -18,29 +18,28 @@ noas04_4_cmap = colors.ListedColormap([
     for key in range(5)
 ], name='noas04_4', N=5)
 
+_plot_ndarray_doc = """
+Plot an array
+
+Parameters
+----------%s
+cmap : str or `~matplotlib.colors.Colormap`, optional
+    A Colormap instance
+ax : axis object, optional
+    Plot in given axis; if None creates a new figure
+legend : bool, optional
+    If ``True``, display the legend
+figsize: tuple of two ints, optional
+    Size of the figure to create.
+
+Returns
+-------
+ax : matplotlib axis
+    axis with plot data
+"""
+
 
 def plot_ndarray(arr, cmap=None, ax=None, legend=False, figsize=None):
-    """
-    Plot an array
-
-    Parameters
-    ----------
-    arr : array-like
-        data to be displayed
-    cmap : str or `~matplotlib.colors.Colormap`, optional
-        A Colormap instance
-    ax : axis object, optional
-        Plot in given axis; if None creates a new figure
-    legend : bool, optional
-        If ``True``, display the legend
-    figsize: tuple of two ints, optional
-        Size of the figure to create.
-
-    Returns
-    -------
-    ax : matplotlib axis
-        axis with plot data
-    """
     if cmap is None:
         cmap = plt.get_cmap('terrain')
 
@@ -57,3 +56,7 @@ def plot_ndarray(arr, cmap=None, ax=None, legend=False, figsize=None):
         ax.legend()
 
     return ax
+
+
+plot_ndarray.__doc__ = _plot_ndarray_doc % \
+    '\narr : array-like\n    data to display'
