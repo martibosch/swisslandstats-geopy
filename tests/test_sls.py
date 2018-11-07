@@ -41,6 +41,17 @@ def test_slsdataframe():
     assert type(ldf[[ldf.x_column, 'AS09_4']]) == pd.DataFrame
     assert type(ldf['AS09_4']) == pd.Series
 
+    # create dataframe with another dummy land statistics column, but with one
+    # row less and test merge (should fill the missing row with a nan)
+    ldf2 = ldf.copy()
+    ldf2['AS85_4'] = pd.Series(1, index=ldf.index[:-1], name='AS85_4')
+    ldf2 = ldf2.drop('AS09_4', axis=1)
+    merged_ldf = ldf.merge(ldf2)
+
+    assert 'AS85_4' in merged_ldf.columns.difference(ldf.columns)
+    # to test for the presence of nan: merged_ldf['AS85_4'].isna().any()
+    assert np.sum(merged_ldf['AS85_4'].isna()) == 1
+
 
 def test_geometry():
     from shapely.geometry import Polygon
