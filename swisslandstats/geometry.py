@@ -52,6 +52,38 @@ Returns
 result : geopandas GeoDataFrame
 """
 
+_clip_by_geometry_doc = """
+Clip a LandDataFrame by a geometry
+
+Parameters
+----------%s
+geometry : shapely Polygon or MultiPolygon
+    the geometry used to clip the dataframe
+geometry_crs : dict, optional
+    the starting coordinate reference system of the passed-in geometry.
+    If not given, it will take the default crs from the settings.
+
+Returns
+-------
+result : LandDataFrame
+"""
+
+_clip_by_nominatim_doc = """
+Clip a LandDataFrame by a single place name query to Nominatim. See also the
+documentation for `osmnx.gdf_from_place`
+
+Parameters
+----------%s
+query : string or dict
+    query string or structured query dict to geocode/download
+which_result : int
+    max number of results to return and which to process upon receipt
+
+Returns
+-------
+result : LandDataFrame
+"""
+
 
 def get_geoseries(ldf):
     if gpd:
@@ -83,23 +115,6 @@ to_geodataframe.__doc__ = _to_geodataframe_doc % '\nldf : LandDataFrame'
 
 
 def clip_by_geometry(ldf, geometry, geometry_crs=None):
-    """
-    Clip a LandDataFrame by a geometry
-
-    Parameters
-    ----------
-    ldf : LandDataFrame
-        landscape statistics dataframe
-    geometry : shapely Polygon or MultiPolygon
-        the geometry used to clip the dataframe
-    crs : dict, optional
-        the starting coordinate reference system of the passed-in geometry.
-        If not given, it will take the default crs from the settings.
-
-    Returns
-    -------
-    result : LandDataFrame
-    """
     if geometry_crs is None:
         geometry_crs = settings.DEFAULT_CRS
 
@@ -132,24 +147,10 @@ def clip_by_geometry(ldf, geometry, geometry_crs=None):
         logging.warning(_gpd_warning_msg)
 
 
+clip_by_geometry.__doc__ = _clip_by_geometry_doc % '\nldf : LandDataFrame'
+
+
 def clip_by_nominatim(ldf, query, which_result=1):
-    """
-    Clip a LandDataFrame by a single place name query to Nominatim. See also
-    the documentation for `osmnx.gdf_from_place`
-
-    Parameters
-    ----------
-    ldf : LandDataFrame
-        landscape statistics dataframe
-    query : string or dict
-        query string or structured query dict to geocode/download
-    which_result : int
-        max number of results to return and which to process upon receipt
-
-    Returns
-    -------
-    result : LandDataFrame
-    """
     if ox:
         try:
             geometry = ox.gdf_from_place(
@@ -171,3 +172,6 @@ def clip_by_nominatim(ldf, query, which_result=1):
             "conda install -c conda-forge osmnx"
             "See https://github.com/gboeing/osmnx for more information "
             "about installing osmnx")
+
+
+clip_by_nominatim.__doc__ = _clip_by_nominatim_doc % '\nldf : LandDataFrame'
