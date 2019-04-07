@@ -26,9 +26,13 @@ def test_slsdataframe():
     plt.switch_backend('agg')  # only for testing purposes
     import numpy as np
     import pandas as pd
+    from affine import Affine
 
     ldf = sls.read_csv('tests/input_data/dataset.csv')
 
+    # we will test that the affine transform is determined correctly for
+    # `tests/input_data/dataset.csv` (hardcoded comparison)
+    assert ldf.affine_transform == Affine(100, 0, 50, 0, -100, 250)
     assert np.all(
         ldf.to_ndarray('AS09_4') == np.arange(4, dtype=np.uint8).reshape(2, 2))
     ldf.to_geotiff(tempfile.TemporaryFile(), 'AS09_4')

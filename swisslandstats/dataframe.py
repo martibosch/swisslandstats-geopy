@@ -56,7 +56,7 @@ class LandDataFrame(pd.DataFrame):
     """
 
     # so that pandas can allow setting this class attributes
-    _metadata = ['crs', 'res']
+    _metadata = ['crs', 'res', '_transform']
 
     index_column = settings.DEFAULT_INDEX_COLUMN
     x_column = settings.DEFAULT_X_COLUMN
@@ -70,6 +70,22 @@ class LandDataFrame(pd.DataFrame):
             self.set_index(self.index_column, inplace=True)
         self.crs = crs
         self.res = res
+
+    @property
+    def affine_transform(self):
+        try:
+            return self._transform
+        except AttributeError:
+            x = self[self.x_column].values
+            y = self[self.y_column].values
+
+            xres, yres = self.res
+
+            x_origin = min(x) - xres // 2
+            y_origin = max(y) + yres // 2
+            self._transform = from_origin(x_origin, y_origin, xres, yres)
+
+            return self._transform
 
     def to_ndarray(self, column, nodata=0, dtype=np.uint8):
         """
@@ -99,10 +115,6 @@ class LandDataFrame(pd.DataFrame):
 
         lulc_arr = np.nan * np.empty((len(set(i)), len(set(j))))
         lulc_arr[-i, j] = z
-        x_origin = min(x) - xres // 2
-        y_origin = max(y) + yres // 2
-        self.transform = from_origin(x_origin, y_origin, xres, yres)
-
         lulc_arr[np.isnan(lulc_arr)] = nodata
 
         return lulc_arr.astype(dtype)
@@ -128,7 +140,7 @@ class LandDataFrame(pd.DataFrame):
         with rasterio.open(fp, 'w', driver='GTiff', height=lulc_arr.shape[0],
                            width=lulc_arr.shape[1], count=1, dtype=str(dtype),
                            nodata=0, crs=self.crs,
-                           transform=self.transform) as raster:
+                           transform=self.affine_transform) as raster:
             raster.write(lulc_arr.astype(dtype), 1)
 
     def plot(self, column, cmap=None, *args, **kwargs):
