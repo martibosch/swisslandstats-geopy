@@ -2,13 +2,12 @@ from __future__ import division
 
 import numpy as np
 import pandas as pd
-import rasterio
 
+import rasterio
 from rasterio.transform import from_origin
 
 from . import geometry as sls_geometry
-from . import plotting
-from . import settings
+from . import plotting, settings
 
 __all__ = ['LandDataFrame', 'merge', 'read_csv']
 
@@ -56,7 +55,7 @@ class LandDataFrame(pd.DataFrame):
     """
 
     # so that pandas can allow setting this class attributes
-    _metadata = ['crs', 'res', '_transform']
+    _metadata = ['crs', 'res']
 
     index_column = settings.DEFAULT_INDEX_COLUMN
     x_column = settings.DEFAULT_X_COLUMN
@@ -71,21 +70,15 @@ class LandDataFrame(pd.DataFrame):
         self.crs = crs
         self.res = res
 
-    @property
-    def affine_transform(self):
-        try:
-            return self._transform
-        except AttributeError:
-            x = self[self.x_column].values
-            y = self[self.y_column].values
+    def get_transform(self):
+        x = self[self.x_column].values
+        y = self[self.y_column].values
 
-            xres, yres = self.res
+        xres, yres = self.res
 
-            x_origin = min(x) - xres // 2
-            y_origin = max(y) + yres // 2
-            self._transform = from_origin(x_origin, y_origin, xres, yres)
-
-            return self._transform
+        x_origin = min(x) - xres // 2
+        y_origin = max(y) + yres // 2
+        return from_origin(x_origin, y_origin, xres, yres)
 
     def to_ndarray(self, column, nodata=0, dtype=np.uint8):
         """
@@ -140,7 +133,7 @@ class LandDataFrame(pd.DataFrame):
         with rasterio.open(fp, 'w', driver='GTiff', height=lulc_arr.shape[0],
                            width=lulc_arr.shape[1], count=1, dtype=str(dtype),
                            nodata=0, crs=self.crs,
-                           transform=self.affine_transform) as raster:
+                           transform=self.get_transform()) as raster:
             raster.write(lulc_arr.astype(dtype), 1)
 
     def plot(self, column, cmap=None, *args, **kwargs):
