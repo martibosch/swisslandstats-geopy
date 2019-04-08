@@ -26,13 +26,9 @@ def test_slsdataframe():
     plt.switch_backend('agg')  # only for testing purposes
     import numpy as np
     import pandas as pd
-    from affine import Affine
 
     ldf = sls.read_csv('tests/input_data/dataset.csv')
 
-    # we will test that the affine transform is determined correctly for
-    # `tests/input_data/dataset.csv` (hardcoded comparison)
-    assert ldf.affine_transform == Affine(100, 0, 50, 0, -100, 250)
     assert np.all(
         ldf.to_ndarray('AS09_4') == np.arange(4, dtype=np.uint8).reshape(2, 2))
     ldf.to_geotiff(tempfile.TemporaryFile(), 'AS09_4')
@@ -55,6 +51,10 @@ def test_slsdataframe():
     assert 'AS85_4' in merged_ldf.columns.difference(ldf.columns)
     # to test for the presence of nan: merged_ldf['AS85_4'].isna().any()
     assert np.sum(merged_ldf['AS85_4'].isna()) == 1
+
+    # test that `get_transform` returns a different transform if, e.g., we
+    # change the min x or max y value
+    assert ldf.get_transform() != ldf.iloc[:2].get_transform()
 
 
 def test_geometry():
