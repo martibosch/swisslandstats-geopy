@@ -1,10 +1,10 @@
 import logging
 
+from . import settings
+
 try:
     import geopandas as gpd
-    import pyproj
 
-    from functools import partial
     from shapely.geometry import Point
     from shapely.ops import transform
 except ImportError:
@@ -14,8 +14,6 @@ try:
     import osmnx as ox
 except ImportError:
     ox = None
-
-from . import settings
 
 __all__ = [
     'get_geoseries', 'to_geodataframe', 'clip_by_geometry', 'clip_by_nominatim'
@@ -122,12 +120,16 @@ def clip_by_geometry(ldf, geometry, geometry_crs=None):
         # TODO: it'd be cool to 'cache' the GeoSeries (maybe as an
         # attribute of LandDataFrame)
 
-        # alternative with osmnx (slower though):
-        # geometry = ox.project_geometry(geometry, to_crs=ls_ldf.crs)
         if geometry_crs != ldf.crs:
-            geometry = transform(
-                partial(pyproj.transform, pyproj.Proj(**geometry_crs),
-                        pyproj.Proj(**ldf.crs)), geometry)
+            # alternative with osmnx (slower):
+            # geometry = ox.project_geometry(geometry, to_crs=ls_ldf.crs)
+            # alternative without geopandas (faster but less ):
+            # geometry = transform(
+            #     partial(pyproj.transform, pyproj.Proj(**geometry_crs),
+            #             pyproj.Proj(**ldf.crs)), geometry)
+            geometry = gpd.GeoDataFrame({
+                'geometry': [geometry]
+            }, crs=geometry_crs).to_crs(ldf.crs)['geometry'].iloc[0]
 
         # first clip by polygon bounds without geopandas
         xmin, ymin, xmax, ymax = geometry.bounds
