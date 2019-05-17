@@ -11,12 +11,8 @@ before_install:
   - hash -r
   - conda config --set always_yes yes --set show_channel_urls true
   - conda update conda
-  - conda config --add channels conda-forge --force
-  - conda create --quiet --name TESTENV python=$TRAVIS_PYTHON_VERSION
+  - conda create -c conda-forge -n TESTENV python=$TRAVIS_PYTHON_VERSION geopandas osmnx
   - source activate TESTENV
-  - conda install -c conda-forge geopandas
-  - conda info --all
-  - conda list
 
 install:
   - pip install .[geo]
