@@ -1,5 +1,7 @@
 import logging
 
+from . import settings
+
 try:
     import geopandas as gpd
     import pyproj
@@ -14,8 +16,6 @@ try:
     import osmnx as ox
 except ImportError:
     ox = None
-
-from . import settings
 
 __all__ = [
     'get_geoseries', 'to_geodataframe', 'clip_by_geometry', 'clip_by_nominatim'
@@ -150,11 +150,11 @@ def clip_by_geometry(ldf, geometry, geometry_crs=None):
 clip_by_geometry.__doc__ = _clip_by_geometry_doc % '\nldf : LandDataFrame'
 
 
-def clip_by_nominatim(ldf, query, which_result=1):
+def clip_by_nominatim(ldf, query, **gdf_from_place_kws):
     if ox:
         try:
             geometry = ox.gdf_from_place(
-                query, which_result=which_result)['geometry'].iloc[0]
+                query, **gdf_from_place_kws)['geometry'].iloc[0]
             return clip_by_geometry(ldf, geometry,
                                     geometry_crs=ox.settings.default_crs)
 

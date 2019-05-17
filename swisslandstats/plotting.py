@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
 from matplotlib import colors
 
 __all__ = ['noas04_4_cmap', 'plot_ndarray']
@@ -39,7 +38,8 @@ ax : matplotlib axis
 """
 
 
-def plot_ndarray(arr, cmap=None, ax=None, legend=False, figsize=None):
+def plot_ndarray(arr, cmap=None, ax=None, legend=False, figsize=None,
+                 **imshow_kws):
     if cmap is None:
         cmap = plt.get_cmap('terrain')
 
@@ -47,7 +47,7 @@ def plot_ndarray(arr, cmap=None, ax=None, legend=False, figsize=None):
         fig, ax = plt.subplots(figsize=figsize)
     ax.set_aspect('equal')
 
-    im = ax.imshow(arr, cmap=cmap)
+    im = ax.imshow(arr, cmap=cmap, **imshow_kws)
 
     if legend:
         for class_val in np.unique(arr.ravel()):
