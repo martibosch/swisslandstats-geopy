@@ -27,11 +27,14 @@ def _get_requirements_from_files(groups_files):
 
 
 def setup_package():
-    reqs = _get_requirements_from_files({'base': 'requirements.txt'})
+    reqs = _get_requirements_from_files({
+        'base': 'requirements.txt',
+        'geo': 'requirements-geo.txt'
+    })
     install_reqs = reqs.pop('base')
 
     # Extra dependences for geometric operations
-    geo = ["geopandas", "osmnx"]
+    geo_reqs = reqs.pop('geo')
 
     # yapf: disable
     setup(
@@ -46,7 +49,7 @@ def setup_package():
         license='GPL-3.0',
         packages=['swisslandstats'],
         install_requires=install_reqs,
-        extras_require={'geo': geo},
+        extras_require={'geo': geo_reqs},
         zip_safe=False
     )
     # yapf: enable
