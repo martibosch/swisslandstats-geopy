@@ -5,14 +5,14 @@
 
 # swisslandstats-geopy
 
-Python tools for the [Swiss Land Statistics datasets from the Swiss Federal Statistical Office](https://www.bfs.admin.ch/bfs/fr/home/services/geostat/geodonnees-statistique-federale/sol-utilisation-couverture/statistique-suisse-superficie.html) (link in French)
+Extended pandas-like interface for the [Swiss Land Statistics datasets from the Swiss Federal Statistical Office](https://www.bfs.admin.ch/bfs/fr/home/services/geostat/geodonnees-statistique-federale/sol-utilisation-couverture/statistique-suisse-superficie.html) (link in French)
 
 ## Features
 
-* Automatically transform files from the Swiss Federal Statistical Office into dataframes
-* Transform categorical land use/land cover information into `numpy` arrays and `GeoTIFF` files
-* Plot categorical land use/land cover information with legend and the appropriate color map
+* Automatically read CSV files from the SFSO into dataframes
+* Export categorical land use/land cover columns into `numpy` arrays and `GeoTIFF` files
 * Clip dataframes by vector geometries
+* Plot categorical land use/land cover information
 
 ```python
 import swisslandstats as sls
