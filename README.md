@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/martibosch/swisslandstats-geopy.svg?branch=master)](https://travis-ci.org/martibosch/swisslandstats-geopy)
 [![Coverage Status](https://coveralls.io/repos/github/martibosch/swisslandstats-geopy/badge.svg?branch=master)](https://coveralls.io/github/martibosch/swisslandstats-geopy?branch=master)
 [![GitHub license](https://img.shields.io/github/license/martibosch/swisslandstats-geopy.svg)](https://github.com/martibosch/swisslandstats-geopy/blob/master/LICENSE.txt)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/martibosch/swisslandstats-notebooks/master?filepath=overview.ipynb)
 
 # swisslandstats-geopy
 
@@ -28,7 +29,7 @@ vaud_ldf.plot('AS09R_4', cmap=sls.noas04_4_cmap, legend=True)
 ```
 ![landstats-vaud](examples/landstats_vaud.png)
 
-See the [example notebook](https://github.com/martibosch/swisslandstats-geopy/blob/master/examples/overview.ipynb) for an overview
+See the [swisslandstats-notebooks](https://github.com/martibosch/swisslandstats-notebooks) repository for a more thorough overview.
 
 ## Installation
 
