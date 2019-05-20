@@ -1,5 +1,5 @@
 ---
-title: swisslandstats-geopy: Python tools for the land statistics datasets from the Swiss Federal Statistical Office
+title: 'swisslandstats-geopy: Python tools for the land statistics datasets from the Swiss Federal Statistical Office'
 tags:
   - Python
   - land use
