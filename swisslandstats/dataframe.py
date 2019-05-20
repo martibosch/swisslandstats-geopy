@@ -2,7 +2,6 @@ from __future__ import division
 
 import numpy as np
 import pandas as pd
-
 import rasterio
 from rasterio.transform import from_origin
 
@@ -49,7 +48,7 @@ class LandDataFrame(pd.DataFrame):
     Keyword Arguments
     -----------------
     crs : dict
-        Coordinate system. The default is ``{'init': 'epsg:21781'}``
+        Coordinate system. The default is ``{'init': 'epsg:2056'}``
     res : tuple
         The (x, y) resolution of the dataset. The default is ``(100, 100)``
     """
@@ -220,7 +219,7 @@ def read_csv(filepath_or_buffer, crs=None, res=None, *args, **kwargs):
         file. For file URLs, a host is expected. For instance, a local file
         could be file://localhost/path/to/table.csv
     crs : str
-        Coordinate system. The default is ``'epsg:21781'``
+        Coordinate system. The default is ``'epsg:2056'``
     res : tuple
         The (x, y) resolution of the dataset. The default is ``(100, 100)``
 
