@@ -140,8 +140,8 @@ class LandDataFrame(pd.DataFrame):
         lulc_arr = self.to_ndarray(column)
         return plotting.plot_ndarray(lulc_arr, cmap=cmap, *args, **kwargs)
 
-    plot.__doc__ = plotting._plot_ndarray_doc % \
-        '\ncolumn : str\n    data column to display'
+    plot.__doc__ = plotting._plot_ndarray_doc % (
+        'column', '\ncolumn : str\n    data column to display')
 
     def clip_by_geometry(self, geometry, geometry_crs=None):
         return sls_geometry.clip_by_geometry(self, geometry,

@@ -18,7 +18,7 @@ noas04_4_cmap = colors.ListedColormap([
 ], name='noas04_4', N=5)
 
 _plot_ndarray_doc = """
-Plot an array
+Plots a land statistics %s with a categorical legend
 
 Parameters
 ----------%s
@@ -58,5 +58,5 @@ def plot_ndarray(arr, cmap=None, ax=None, legend=False, figsize=None,
     return ax
 
 
-plot_ndarray.__doc__ = _plot_ndarray_doc % \
-    '\narr : array-like\n    data to display'
+plot_ndarray.__doc__ = _plot_ndarray_doc % (
+    'array', '\narr : array-like\n    data to display')

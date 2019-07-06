@@ -29,6 +29,7 @@ def _get_requirements_from_files(groups_files):
 def setup_package():
     reqs = _get_requirements_from_files({
         'base': 'requirements.txt',
+        'dev': 'requirements-dev.txt',
         'geo': 'requirements-geo.txt'
     })
     install_reqs = reqs.pop('base')
