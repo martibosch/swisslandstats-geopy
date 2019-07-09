@@ -1,5 +1,9 @@
 # Change log
 
+## 0.7.1 (09/07/2019)
+
+* fix: deleted reqs-dev from setup.py (not included in MANIFEST)
+
 ## 0.7.0 (09/07/2019)
 
 * plotting with an affine transform via rasterio.plot.show
