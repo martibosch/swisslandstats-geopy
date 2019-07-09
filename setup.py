@@ -39,7 +39,7 @@ def setup_package():
     # yapf: disable
     setup(
         name='swisslandstats-geopy',
-        version='0.7.0',
+        version='0.7.1',
         description='Python for the land statistics datasets from the SFSO',
         long_description=long_description,
         long_description_content_type='text/markdown',
