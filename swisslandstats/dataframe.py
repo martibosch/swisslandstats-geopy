@@ -136,10 +136,13 @@ class LandDataFrame(pd.DataFrame):
                            transform=self.get_transform()) as raster:
             raster.write(lulc_arr.astype(dtype), 1)
 
-    def plot(self, column, cmap=None, *args, **kwargs):
+    def plot(self, column, cmap=None, legend=False, figsize=None, ax=None,
+             **show_kws):
         # TODO: automatically assign cmaps according to columns
         lulc_arr = self.to_ndarray(column)
-        return plotting.plot_ndarray(lulc_arr, cmap=cmap, *args, **kwargs)
+        return plotting.plot_ndarray(lulc_arr, transform=self.get_transform(),
+                                     cmap=cmap, legend=legend, figsize=figsize,
+                                     ax=ax, **show_kws)
 
     plot.__doc__ = plotting._plot_ndarray_doc % (
         'column', '\ncolumn : str\n    data column to display')

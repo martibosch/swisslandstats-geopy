@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import colors
+from rasterio.plot import show
 
 __all__ = ['noas04_4_cmap', 'plot_ndarray']
 
@@ -18,18 +19,21 @@ noas04_4_cmap = colors.ListedColormap([
 ], name='noas04_4', N=5)
 
 _plot_ndarray_doc = """
-Plots a land statistics %s with a categorical legend
+Plots a land statistics %s with a categorical legend by means of
+`rasterio.plot.show`
 
 Parameters
 ----------%s
 cmap : str or `~matplotlib.colors.Colormap`, optional
     A Colormap instance
-ax : axis object, optional
-    Plot in given axis; if None creates a new figure
 legend : bool, optional
     If ``True``, display the legend
 figsize: tuple of two ints, optional
     Size of the figure to create.
+ax : axis object, optional
+    Plot in given axis; if None creates a new figure
+**show_kws : optional
+    Keyword arguments to be passed to `rasterio.plot.show`
 
 Returns
 -------
@@ -38,8 +42,8 @@ ax : matplotlib axis
 """
 
 
-def plot_ndarray(arr, cmap=None, ax=None, legend=False, figsize=None,
-                 **imshow_kws):
+def plot_ndarray(arr, transform=None, cmap=None, legend=False, figsize=None,
+                 ax=None, **show_kws):
     if cmap is None:
         cmap = plt.get_cmap('terrain')
 
@@ -47,11 +51,14 @@ def plot_ndarray(arr, cmap=None, ax=None, legend=False, figsize=None,
         fig, ax = plt.subplots(figsize=figsize)
     ax.set_aspect('equal')
 
-    im = ax.imshow(arr, cmap=cmap, **imshow_kws)
+    ax = show(arr, ax=ax, transform=transform, cmap=cmap, **show_kws)
 
     if legend:
+        im = ax.get_images()[0]
         for class_val in np.unique(arr.ravel()):
-            ax.plot(0, 0, 'o', c=cmap(im.norm(class_val)), label=class_val)
+            ax.plot(ax.get_xlim()[0],
+                    ax.get_ylim()[0], 'o', c=cmap(im.norm(class_val)),
+                    label=class_val)
 
         ax.legend()
 
@@ -59,4 +66,6 @@ def plot_ndarray(arr, cmap=None, ax=None, legend=False, figsize=None,
 
 
 plot_ndarray.__doc__ = _plot_ndarray_doc % (
-    'array', '\narr : array-like\n    data to display')
+    'array',
+    '\narr : array-like\n    data to display\ntransform : Affine, optional\n'
+    '    The affine transform')
