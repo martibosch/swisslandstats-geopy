@@ -66,8 +66,9 @@ class LandDataFrame(pd.DataFrame):
         super(LandDataFrame, self).__init__(*args, **kwargs)
         if self.index.name != self.index_column:
             self.set_index(self.index_column, inplace=True)
-            self.crs = crs
-            self.res = res
+
+        self.crs = crs
+        self.res = res
 
     def get_transform(self):
         x = self[self.x_column].values
