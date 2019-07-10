@@ -25,7 +25,7 @@ ldf.plot('AS09R_4', cmap=sls.noas04_4_cmap, legend=True)
 ![landstats](examples/landstats.png)
 
 ```python
-vaud_ldf = sls.clip_by_nominatim(ldf, 'Vaud, Switzerland')
+vaud_ldf = ldf.clip_by_nominatim('Vaud, Switzerland')
 vaud_ldf.plot('AS09R_4', cmap=sls.noas04_4_cmap, legend=True)
 ```
 ![landstats-vaud](examples/landstats_vaud.png)
