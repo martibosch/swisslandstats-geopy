@@ -1,7 +1,7 @@
 swisslandstats-geopy documentation
 ==================================
 
-Extended pandas-like interface for the `Swiss Land Statistics datasets from the Swiss Federal Statistical Office <https://www.bfs.admin.ch/bfs/fr/home/services/geostat/geodonnees-statistique-federale/sol-utilisation-couverture/statistique-suisse-superficie.html>`_ (link in French)
+Extended pandas-like interface for the `Swiss Land Statistics datasets from the Swiss Federal Statistical Office (SFSO) <https://www.bfs.admin.ch/bfs/fr/home/services/geostat/geodonnees-statistique-federale/sol-utilisation-couverture/statistique-suisse-superficie.html>`_ (link in French)
 
 .. toctree::
    :maxdepth: 2
@@ -9,6 +9,8 @@ Extended pandas-like interface for the `Swiss Land Statistics datasets from the 
 
    swisslandstats
 
+The target audience of ``swisslandstats-geopy`` is researchers and developers in environmental sciences and GIS, who intend to produce repeatable and reproducible computational workflows that make use of the land use/land cover inventory provided by the SFSO.
+   
 Features
 --------
 
@@ -17,7 +19,13 @@ Features
 * Clip dataframes by vector geometries
 * Plot categorical land use/land cover information
 
-See the `swisslandstats-notebooks <https://github.com/martibosch/swisslandstats-notebooks)>`_ repository for a more thorough overview.  
+See the `swisslandstats-notebooks <https://github.com/martibosch/swisslandstats-notebooks)>`_ repository for a more thorough overview.
+
+Examples of applications of the library in the academic literature include:
+
+* The assessment of the carbon sequestration for the canton of Vaud (see `the dedicated GitHub repository <https://github.com/martibosch/carbon-sequestration-vaud>`_ with the materials necessary to reproduce the results)
+* The evaluation of the spatio-temporal patterns of LULC change in the urban agglomerations of Zurich, Bern and Lausanne (see `the dedicated GitHub repository <https://github.com/martibosch/swiss-urbanization>`_ with the materials necessary to reproduce the results).
+
   
 Installation
 ------------

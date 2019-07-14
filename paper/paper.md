@@ -47,6 +47,9 @@ The aim of the proposed library, swisslandstats-geopy is to provide an extended 
 * Clip `LandDataFrame` instances by Shapely vector geometries [@gillies2007shapely] or directly by region names. The latter uses OSMnx [@boeing2017osmnx] to retrieve the geometries from the [OpenStreetMap](https://www.openstreetmap.org/)
 * Plot the categorical LULC columns as raster images
 
+The target audience of swisslandstats-geopy is researchers and developers in environmental sciences and GIS, who intend to produce repeatable and reproducible computational workflows that make use of the LULC inventory provided by the SFSO. Examples of applications of the library in the academic literature include the assessment of the carbon sequestration for the canton of Vaud [@jaligot2019assessing, see also [a dedicated GitHub repository](https://github.com/martibosch/carbon-sequestration-vaud) with the materials necessary to reproduce the results], and the evaluation of the spatio-temporal patterns of LULC change in the urban agglomerations of Zurich, Bern and Lausanne [@bosch2019spatiotemporal, see also [a dedicated GitHub repository](https://github.com/martibosch/swiss-urbanization) with the materials necessary to reproduce the results].
+
+
 # Availability
 
 The source code of swisslandstats-geopy is fully available at [a GitHub repository](https://github.com/martibosch/swisslandstats-geopy). A dedicated Python package has been created and is hosted at the [Python Package Index (PyPI)](https://pypi.org/project/swisslandstats-geopy/). The documentation site is hosted at [Read the Docs](https://swisslandstats-geopy.readthedocs.io/), and an example notebook with an overview of the library's features is provided at a [dedicated GitHub repository](https://github.com/martibosch/swisslandstats-notebooks), which can be executed interactively online with the SFSO free tier LULC dataset by means of the Binder web service [@jupyter2018binder]. 
