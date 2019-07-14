@@ -49,9 +49,9 @@ The aim of the proposed library, swisslandstats-geopy is to provide an extended 
 
 # Availability
 
-The source code of swisslandstats-geopy is fully available at [a GitHub repository](https://github.com/martibosch/swisslandstats-geopy). A dedicated Python package has been created and is hosted at the [Python Package Index (PyPI)](https://pypi.org/project/swisslandstats-geopy/). Unit tests are run within the [Travis CI](https://travis-ci.org/martibosch/swisslandstats-geopy) platform every time that new commits are pushed to the GitHub repository. Additionally, test coverage [is reported on Coveralls](https://coveralls.io/github/martibosch/swisslandstats-geopy?branch=master).
+The source code of swisslandstats-geopy is fully available at [a GitHub repository](https://github.com/martibosch/swisslandstats-geopy). A dedicated Python package has been created and is hosted at the [Python Package Index (PyPI)](https://pypi.org/project/swisslandstats-geopy/). The documentation site is hosted at [Read the Docs](https://swisslandstats-geopy.readthedocs.io/), and an example notebook with an overview of the library's features is provided at a [dedicated GitHub repository](https://github.com/martibosch/swisslandstats-notebooks), which can be executed interactively online with the SFSO free tier LULC dataset by means of the Binder web service [@jupyter2018binder]. 
 
-While there is no documentation site for the library, all the methods are documented by means of Python docstrings [@goodger2001docstring]. On the other hand, an example notebook with an overview of `swisslandstats-geopy`'s features is provided at a [dedicated GitHub repository](https://github.com/martibosch/swisslandstats-notebooks) and can be executed interactively online with the SFSO free tier LULC dataset by means of the Binder web service [@jupyter2018binder].
+Unit tests are run within the [Travis CI](https://travis-ci.org/martibosch/swisslandstats-geopy) platform every time that new commits are pushed to the GitHub repository. Additionally, test coverage [is reported on Coveralls](https://coveralls.io/github/martibosch/swisslandstats-geopy?branch=master).
 
 
 
