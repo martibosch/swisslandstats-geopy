@@ -43,7 +43,7 @@ E       | N       | FJ85 | ... | FJ18 | AS85_17 | ... | AS18_17 |
 The aim of the proposed library, swisslandstats-geopy is to provide an extended pandas `DataFrame` interface [@mckinney2010data] to the table-like LULC inventory provided by the SFSO, which includes the following features:
 
 * Read CSV files from the SFSO into `LandDataFrame` objects, which extend the conventional pandas `DataFrame` with additional attributes that store the coordinate reference system (CRS) and pixel resolution.
-* Export the categorical LULC columns into NumPy arrays [@oliphant2006guide] and GeoTIFF files
+* Export the categorical LULC columns into NumPy arrays [@van2011numpy] and GeoTIFF files
 * Clip `LandDataFrame` instances by Shapely vector geometries [@gillies2007shapely] or directly by region names. The latter uses OSMnx [@boeing2017osmnx] to retrieve the geometries from the [OpenStreetMap](https://www.openstreetmap.org/)
 * Plot the categorical LULC columns as raster images
 
