@@ -43,9 +43,7 @@ See the [swisslandstats-notebooks](https://github.com/martibosch/swisslandstats-
 If you want to be able to clip dataframes by vector geometries, you will need [geopandas](https://github.com/geopandas/geopandas) (and [osmnx](https://github.com/gboeing/osmnx) to clip dataframes from place names e.g., "Zurich, Switzerland"). The easiest way to install such requirements is via conda as in:
 
 ``` bash
-# install the cythonized geopandas
-conda install -c conda-forge/label/dev geopandas
-conda install -c conda-forge osmnx
+conda install -c conda-forge geopandas osmnx
 ```
 
 Then you can install `swisslandstats-geopy` via pip as in:
@@ -56,7 +54,14 @@ pip install swisslandstats-geopy
 
 **Important notes**:
 
-* The [cythonized geopandas](https://jorisvandenbossche.github.io/blog/2017/09/19/geopandas-cython/) can give you vast speed-ups when clipping dataframes e.g., 32.7 ms instead of 51.8 s (x1584) to clip by the dataframe by canton of Vaud. However, [the cythonized geopandas is not production code yet](https://github.com/geopandas/geopandas/issues/473). If other libraries of your environment depend on geopandas, it might be better to install its (slower) stable version as in `conda install -c conda-forge geopandas`.
+* The [cythonized geopandas](https://jorisvandenbossche.github.io/blog/2017/09/19/geopandas-cython/) can give you vast speed-ups when clipping dataframes e.g., 32.7 ms instead of 51.8 s (x1584) to clip by the dataframe by canton of Vaud. You might install it as in:
+
+``` bash
+# install the cythonized geopandas
+conda install -c conda-forge/label/dev geopandas
+```
+
+However, [the cythonized geopandas is not production code yet](https://github.com/geopandas/geopandas/issues/473). If other libraries of your environment depend on geopandas, it might be better to install its (slower) stable version as in `conda install -c conda-forge geopandas`.
 
 * Depending on your environment, you might get an `error while loading shared libraries: libncurses.so.6`. You might solve it by `conda install -c conda-forge ncurses`
 
