@@ -7,7 +7,9 @@
 
 # swisslandstats-geopy
 
-Extended pandas-like interface for the [Swiss Land Statistics datasets from the Swiss Federal Statistical Office (SFSO)](https://www.bfs.admin.ch/bfs/fr/home/services/geostat/geodonnees-statistique-federale/sol-utilisation-couverture/statistique-suisse-superficie.html) (link in French)
+Extended pandas-like interface for the [Swiss Land Statistics datasets from the Swiss Federal Statistical Office (SFSO)](https://www.bfs.admin.ch/bfs/fr/home/services/geostat/geodonnees-statistique-federale/sol-utilisation-couverture/statistique-suisse-superficie.html) (link in French).
+
+The Swiss Land Statistics inventory by the SFSO is stored in a relational database format which allows storing the different survey periods into a single CSV file, nevertheless, libraries to process geographical raster data aree rarely capable of processing such format. Therefore, the aim of `swisslandstats-geopy` is to provide an extended pandas `DataFrame` interface to such inventory (see [the "Features" section below](#features)).
 
 The target audience of `swisslandstats-geopy` is researchers and developers in environmental sciences and GIS, who intend to produce repeatable and reproducible computational workflows that make use of the land use/land cover inventory provided by the SFSO. 
 

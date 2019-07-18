@@ -35,7 +35,7 @@ E       | N       | FJ85 | ... | FJ18 | AS85_17 | ... | AS18_17 |
 2485600 | 1109800 | 1980 | ... | 2012 |       7 | ... |       7 |
     ... |     ... |  ... | ... |  ... |     ... | ... |     ... |
 
-The aim of the proposed library, swisslandstats-geopy is to provide an extended pandas `DataFrame` interface [@mckinney2010data] to the table-like LULC inventory provided by the SFSO, which includes the following features:
+While the above structure allows storing the different survey periods into a single file which can be straightforwardly read by most data analysis packages, libraries to process geographical raster data aree rarely capable of processing such format. Therefore, the aim of the proposed library, swisslandstats-geopy is to provide an extended pandas `DataFrame` interface [@mckinney2010data] to the table-like LULC inventory provided by the SFSO, which includes the following features:
 
 * Read CSV files from the SFSO into `LandDataFrame` objects, which extend the conventional pandas `DataFrame` with additional attributes that store the coordinate reference system (CRS) and pixel resolution.
 * Export the categorical LULC columns into NumPy arrays [@van2011numpy] and GeoTIFF files
