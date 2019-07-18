@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/martibosch/swisslandstats-geopy.svg?branch=master)](https://travis-ci.org/martibosch/swisslandstats-geopy)
 [![Coverage Status](https://coveralls.io/repos/github/martibosch/swisslandstats-geopy/badge.svg?branch=master)](https://coveralls.io/github/martibosch/swisslandstats-geopy?branch=master)
 [![GitHub license](https://img.shields.io/github/license/martibosch/swisslandstats-geopy.svg)](https://github.com/martibosch/swisslandstats-geopy/blob/master/LICENSE.txt)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/martibosch/swisslandstats-notebooks/master?filepath=overview.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/martibosch/swisslandstats-geopy/master?filepath=examples/overview.ipynb)
 
 # swisslandstats-geopy
 
@@ -32,7 +32,9 @@ vaud_ldf.plot('AS09R_4', cmap=sls.noas04_4_cmap, legend=True)
 ```
 ![landstats-vaud](examples/landstats_vaud.png)
 
-See the [swisslandstats-notebooks](https://github.com/martibosch/swisslandstats-notebooks) repository for a more thorough overview. Examples of applications of the library in the academic literature include:
+See the [example notebook](https://github.com/martibosch/swisslandstats-geopy/tree/master/examples/overview.ipynb) for a more thorough overview (or click the Binder badge above to execute it interactively in your browser).
+
+Examples of applications of the library in the academic literature include:
 
 * The assessment of the carbon sequestration for the canton of Vaud (see [the dedicated GitHub repository](https://github.com/martibosch/carbon-sequestration-vaud) with the materials necessary to reproduce the results)
 * The evaluation of the spatio-temporal patterns of LULC change in the urban agglomerations of Zurich, Bern and Lausanne (see [the dedicated GitHub repository](https://github.com/martibosch/swiss-urbanization) with the materials necessary to reproduce the results).
