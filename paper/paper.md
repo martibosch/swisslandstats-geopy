@@ -9,8 +9,6 @@ tags:
 authors:
  - name: Martí Bosch
    orcid: 0000-0001-8735-9144
- - name: Jérôme Chenal
-   orcid: 0000-0002-8109-8358
 affiliations:
  - name: Urban and Regional Planning Community (CEAT), École Polytechnique Fédérale de Lausanne (EPFL), Switzerland
 date: 17 May 2019
