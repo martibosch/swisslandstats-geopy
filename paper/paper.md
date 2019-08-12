@@ -35,7 +35,7 @@ E       | N       | FJ85 | ... | FJ18 | AS85_17 | ... | AS18_17 |
 2485600 | 1109800 | 1980 | ... | 2012 |       7 | ... |       7 |
     ... |     ... |  ... | ... |  ... |     ... | ... |     ... |
 
-While the above structure allows storing the different survey periods into a single file which can be straightforwardly read by most data analysis packages, libraries to process geographical raster data aree rarely capable of processing such format. Therefore, the aim of the proposed library, swisslandstats-geopy is to provide an extended pandas `DataFrame` interface [@mckinney2010data] to the table-like LULC inventory provided by the SFSO, which includes the following features:
+While the above structure allows storing the different survey periods into a single file which can be straightforwardly read by most data analysis packages, libraries to process geographical raster data are rarely capable of processing such format. Therefore, the aim of the proposed library, swisslandstats-geopy, is to provide an extended pandas `DataFrame` interface [@mckinney2010data] to the table-like LULC inventory provided by the SFSO, which includes the following features:
 
 * Read CSV files from the SFSO into `LandDataFrame` objects, which extend the conventional pandas `DataFrame` with additional attributes that store the coordinate reference system (CRS) and pixel resolution.
 
@@ -83,7 +83,7 @@ On the other hand, the `settings` module of swisslandstats-geopy allows changing
 
 # Availability
 
-The source code of swisslandstats-geopy is fully available at [a GitHub repository](https://github.com/martibosch/swisslandstats-geopy). A dedicated Python package has been created and is hosted at the [Python Package Index (PyPI)](https://pypi.org/project/swisslandstats-geopy/). The documentation site is hosted at [Read the Docs](https://swisslandstats-geopy.readthedocs.io/), and an example notebook with an overview of the library's features is provided at a [dedicated GitHub repository](https://github.com/martibosch/swisslandstats-notebooks), which can be executed interactively online with the SFSO free tier LULC dataset by means of the Binder web service [@jupyter2018binder]. 
+The source code of swisslandstats-geopy is fully available at [a GitHub repository](https://github.com/martibosch/swisslandstats-geopy). A dedicated Python package has been created and is hosted at the [Python Package Index (PyPI)](https://pypi.org/project/swisslandstats-geopy/). The documentation site is hosted at [Read the Docs](https://swisslandstats-geopy.readthedocs.io/), and an example Jupyter notebook with an overview of the library's features is provided at a [dedicated GitHub repository](https://github.com/martibosch/swisslandstats-notebooks), which can be executed interactively online with the SFSO free tier LULC dataset by means of the Binder web service [@jupyter2018binder]. 
 
 Unit tests are run within the [Travis CI](https://travis-ci.org/martibosch/swisslandstats-geopy) platform every time that new commits are pushed to the GitHub repository. Additionally, test coverage [is reported on Coveralls](https://coveralls.io/github/martibosch/swisslandstats-geopy?branch=master).
 
