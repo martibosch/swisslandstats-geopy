@@ -67,14 +67,14 @@ While the above structure allows storing the different survey periods into a sin
     lausanne_ldf = ldf.clip_by_nominatim('Lausanne, Vaud')
     ```
     
-* Plot the categorical LULC columns as raster images
+* Plot the categorical LULC columns as raster images (see Figure 1)
 
     ```python
     ax = lausanne_ldf.plot('AS09R_4')
     ax.tick_params(axis='x', rotation=45)
     ``` 
     
-    ![Resulting plot.](landstats_lausanne.png)
+    ![Plot of the categorical LULC columns as a raster image.](landstats_lausanne.png)
 
 The target audience of swisslandstats-geopy is researchers and developers in environmental sciences and GIS, who intend to produce repeatable and reproducible computational workflows that make use of the LULC inventory provided by the SFSO. Examples of applications of the library in the academic literature include the assessment of the carbon sequestration for the canton of Vaud [@jaligot2019assessing, see also [a dedicated GitHub repository](https://github.com/martibosch/carbon-sequestration-vaud) with the materials necessary to reproduce the results], and the evaluation of the spatio-temporal patterns of LULC change in the urban agglomerations of Zurich, Bern and Lausanne [@bosch2019spatiotemporal, see also [a dedicated GitHub repository](https://github.com/martibosch/swiss-urbanization) with the materials necessary to reproduce the results].
 
