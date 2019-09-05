@@ -1,5 +1,10 @@
 # Change log
 
+## 0.7.2 (05/09/2019)
+
+* updated README and JOSS paper
+* moved overview notebook from separate repo to examples directory
+
 ## 0.7.1 (09/07/2019)
 
 * fix: deleted reqs-dev from setup.py (not included in MANIFEST)
