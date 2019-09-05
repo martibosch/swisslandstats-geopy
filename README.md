@@ -4,10 +4,13 @@
 [![Coverage Status](https://coveralls.io/repos/github/martibosch/swisslandstats-geopy/badge.svg?branch=master)](https://coveralls.io/github/martibosch/swisslandstats-geopy?branch=master)
 [![GitHub license](https://img.shields.io/github/license/martibosch/swisslandstats-geopy.svg)](https://github.com/martibosch/swisslandstats-geopy/blob/master/LICENSE.txt)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/martibosch/swisslandstats-geopy/master?filepath=examples/overview.ipynb)
+[![status](http://joss.theoj.org/papers/b6de0f096382d4dcd5d137a3f1edcb30/status.svg)](http://joss.theoj.org/papers/b6de0f096382d4dcd5d137a3f1edcb30)
 
 # swisslandstats-geopy
 
 Extended pandas-like interface for the [Swiss Land Statistics datasets from the Swiss Federal Statistical Office (SFSO)](https://www.bfs.admin.ch/bfs/fr/home/services/geostat/geodonnees-statistique-federale/sol-utilisation-couverture/statistique-suisse-superficie.html) (link in French).
+
+**Citation**: Bosch M. 2019. "swisslandstats-geopy: Python tools for the land statistics datasets from the Swiss Federal Statistical Office". The Journal Open Source Software 4(40), 1511. https://doi.org/10.21105.joss.01511
 
 The Swiss Land Statistics inventory by the SFSO is stored in a relational database format which allows storing the different survey periods into a single CSV file, nevertheless, libraries to process geographical raster data aree rarely capable of processing such format. Therefore, the aim of `swisslandstats-geopy` is to provide an extended pandas `DataFrame` interface to such inventory (see [the "Features" section below](#features)).
 
