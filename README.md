@@ -5,6 +5,7 @@
 [![GitHub license](https://img.shields.io/github/license/martibosch/swisslandstats-geopy.svg)](https://github.com/martibosch/swisslandstats-geopy/blob/master/LICENSE.txt)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/martibosch/swisslandstats-geopy/master?filepath=examples/overview.ipynb)
 [![status](http://joss.theoj.org/papers/b6de0f096382d4dcd5d137a3f1edcb30/status.svg)](http://joss.theoj.org/papers/b6de0f096382d4dcd5d137a3f1edcb30)
+[![DOI](https://zenodo.org/badge/151926572.svg)](https://zenodo.org/badge/latestdoi/151926572)
 
 # swisslandstats-geopy
 
