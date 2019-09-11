@@ -10,7 +10,7 @@ authors:
  - name: Martí Bosch
    orcid: 0000-0001-8735-9144
 affiliations:
- - name: Urban and Regional Planning Community (CEAT), École Polytechnique Fédérale de Lausanne (EPFL), Switzerland
+ - name: Urban and Regional Planning Community, École Polytechnique Fédérale de Lausanne, Switzerland
 date: 17 May 2019
 bibliography: paper.bib
 ---
@@ -35,7 +35,7 @@ E       | N       | FJ85 | ... | FJ18 | AS85_17 | ... | AS18_17 |
 2485600 | 1109800 | 1980 | ... | 2012 |       7 | ... |       7 |
     ... |     ... |  ... | ... |  ... |     ... | ... |     ... |
 
-While the above structure allows storing the different survey periods into a single file which can be straightforwardly read by most data analysis packages, libraries to process geographical raster data are rarely capable of processing such format. Therefore, the aim of the proposed library, swisslandstats-geopy, is to provide an extended pandas `DataFrame` interface [@mckinney2010data] to the table-like LULC inventory provided by the SFSO, which includes the following features:
+While the above structure allows storing the different survey periods into a single file which can be straightforwardly read by most data analysis packages, libraries to process geographical raster data are rarely capable of processing such a format. Therefore, the aim of the proposed library, swisslandstats-geopy, is to provide an extended pandas `DataFrame` interface [@mckinney2010data] to the table-like LULC inventory provided by the SFSO, which includes the following features:
 
 * Read CSV files from the SFSO into `LandDataFrame` objects, which extend the conventional pandas `DataFrame` with additional attributes that store the coordinate reference system (CRS) and pixel resolution.
 
@@ -64,21 +64,21 @@ While the above structure allows storing the different survey periods into a sin
 * Clip `LandDataFrame` instances by Shapely vector geometries [@gillies2007shapely] or directly by region names. The latter uses OSMnx [@boeing2017osmnx] to retrieve the geometries from the [OpenStreetMap](https://www.openstreetmap.org/)
 
     ```python
-    lausanne_ldf = ldf.clip_by_nominatim('Lausanne, Vaud')
+    vaud_ldf = ldf.clip_by_nominatim(Vaud, Switzerland')
     ```
     
 * Plot the categorical LULC columns as raster images (see Figure 1)
 
     ```python
-    ax = lausanne_ldf.plot('AS09R_4')
+    ax = vaud_ldf.plot('AS09R_4')
     ax.tick_params(axis='x', rotation=45)
     ``` 
     
-    ![Plot of a categorical LULC column as a raster image.](landstats_lausanne.png)
+    ![Plot of a categorical LULC column as a raster image.](landstats_vaud.png)
 
 The target audience of swisslandstats-geopy is researchers and developers in environmental sciences and GIS, who intend to produce repeatable and reproducible computational workflows that make use of the LULC inventory provided by the SFSO. Examples of applications of the library in the academic literature include the assessment of the carbon sequestration for the canton of Vaud [@jaligot2019assessing, see also [a dedicated GitHub repository](https://github.com/martibosch/carbon-sequestration-vaud) with the materials necessary to reproduce the results], and the evaluation of the spatio-temporal patterns of LULC change in the urban agglomerations of Zurich, Bern and Lausanne [@bosch2019spatiotemporal, see also [a dedicated GitHub repository](https://github.com/martibosch/swiss-urbanization) with the materials necessary to reproduce the results].
 
-On the other hand, the `settings` module of swisslandstats-geopy allows changing the CRS and pixel resolution so that the library might also be used with similarly table-like raster datasets. For instance, a dataset of phenology in the Eastern US and Canadian forests for the 1984-2013 period [@melaas2018landsat] has been processed seamlessly into a `LandDataFrame` instance. Neverhteless, although other table-like raster datasets such as the European land use/cover area frame statistical survey (LUCAS) [@ballin2018redesign] could be instantiated as `LandDataFrames`, the data could not be converted to NumPy arrays, likely because of the CRS and how their grid is sampled. Further exploration of the characteristics that a table-like raster dataset must fulfill in order to be seamlessly procesed within swisslandstats-geopy could signficantly enhance the reusability of the library.
+On the other hand, the `settings` module of swisslandstats-geopy allows changing the CRS and pixel resolution so that the library might also be used with similarly table-like raster datasets. For instance, a dataset of phenology in the Eastern US and Canadian forests for the 1984-2013 period [@melaas2018landsat] has been processed seamlessly into a `LandDataFrame` instance. Nevertheless, although other table-like raster datasets such as the European land use/cover area frame statistical survey (LUCAS) [@ballin2018redesign] could be instantiated as `LandDataFrames`, the data could not be converted to NumPy arrays, likely because of the CRS and how their grid is sampled. Further exploration of the characteristics that a table-like raster dataset must fulfill in order to be seamlessly procesed within swisslandstats-geopy could signficantly enhance the reusability of the library.
 
 
 # Availability
@@ -87,6 +87,10 @@ The source code of swisslandstats-geopy is fully available at [a GitHub reposito
 
 Unit tests are run within the [Travis CI](https://travis-ci.org/martibosch/swisslandstats-geopy) platform every time that new commits are pushed to the GitHub repository. Additionally, test coverage [is reported on Coveralls](https://coveralls.io/github/martibosch/swisslandstats-geopy?branch=master).
 
+
+# Acknowledgments
+
+This research has been supported by the École Polytechnique Fédérale de Lausanne.
 
 
 # References
