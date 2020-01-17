@@ -1,5 +1,9 @@
 # Change log
 
+## 0.7.3 (17/01/2020)
+
+* updated CRS in settings to `'<authority>:<code>'` syntax
+
 ## 0.7.2 (05/09/2019)
 
 * updated README and JOSS paper
