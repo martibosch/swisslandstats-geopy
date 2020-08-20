@@ -45,28 +45,55 @@ class LandDataFrame(pd.DataFrame):
     The default parameters are defined to work with SFSO data out-of-the-box,
     but they can be modified through the following keyword arguments:
 
-    Keyword Arguments
-    -----------------
-    crs : dict
-        Coordinate system. The default is ``{'init': 'epsg:2056'}``
-    res : tuple
-        The (x, y) resolution of the dataset. The default is ``(100, 100)``
+    Parameters
+    ----------
+    data : ndarray (structured or homogeneous), Iterable, dict or DataFrame
+        Data that will be passed to the initialization method of `pd.DataFrame`
+    index_column : str, optional
+        Label of the index column. If `None` is provided, the value set in
+        `settings.DEFAULT_INDEX_COLUMN` will be taken.    
+    x_column : str, optional
+        Label of the x-coordinates column. If `None` is provided, the value
+        set in `settings.DEFAULT_X_COLUMN` will be taken.    
+    y_column : str, optional
+        Label of the y-coordinates column. If `None` is provided, the value
+        set in `settings.DEFAULT_Y_COLUMN` will be taken.    
+    crs : rasterio CRS, optional
+        Coordinate reference system, as a rasterio CRS object. If `None` is
+        provided, the value set in `settings.DEFAULT_CRS` will be taken.
+    res : tuple, optional
+        The (x, y) resolution of the dataset. If `None` is provided, the value
+        set in `settings.DEFAULT_RES` will be taken.
     """
 
     # so that pandas can allow setting this class attributes
-    _metadata = ['crs', 'res']
+    _metadata = ['x_column', 'y_column', 'crs', 'res']
 
-    index_column = settings.DEFAULT_INDEX_COLUMN
-    x_column = settings.DEFAULT_X_COLUMN
-    y_column = settings.DEFAULT_Y_COLUMN
+    # index_column = settings.DEFAULT_INDEX_COLUMN
 
-    def __init__(self, *args, **kwargs):
-        crs = kwargs.pop('crs', settings.DEFAULT_CRS)
-        res = kwargs.pop('res', settings.DEFAULT_RES)
-        super(LandDataFrame, self).__init__(*args, **kwargs)
-        if self.index.name != self.index_column:
-            self.set_index(self.index_column, inplace=True)
+    def __init__(self, data, index_column=None, x_column=None, y_column=None,
+                 crs=None, res=None, **df_init_kws):
+        # init the pandas dataframe
+        super(LandDataFrame, self).__init__(data, **df_init_kws)
 
+        # set the index
+        if index_column is None:
+            index_column = settings.DEFAULT_INDEX_COLUMN
+        if self.index.name != index_column:
+            self.set_index(index_column, inplace=True)
+
+        # set the rest of attributes
+        if x_column is None:
+            x_column = settings.DEFAULT_X_COLUMN
+        if y_column is None:
+            y_column = settings.DEFAULT_Y_COLUMN
+        if crs is None:
+            crs = settings.DEFAULT_CRS
+        if res is None:
+            res = settings.DEFAULT_RES
+
+        self.x_column = x_column
+        self.y_column = y_column
         self.crs = crs
         self.res = res
 
@@ -210,7 +237,9 @@ def merge(left, right, duplicate_columns=False, how='outer', left_index=True,
 merge.__doc__ = _merge_doc % '\nleft : LandDataFrame'
 
 
-def read_csv(filepath_or_buffer, crs=None, res=None, *args, **kwargs):
+def read_csv(filepath_or_buffer, index_column=None, x_column=None,
+             y_column=None, crs=None, res=None, read_csv_kws=None,
+             df_init_kws=None):
     """
     Convert a LULC column to a numpy array. See also the documentation for
     `pandas.read_csv`.
@@ -222,18 +251,35 @@ def read_csv(filepath_or_buffer, crs=None, res=None, *args, **kwargs):
         The string could be a URL. Valid URL schemes include http, ftp, s3, and
         file. For file URLs, a host is expected. For instance, a local file
         could be file://localhost/path/to/table.csv
-    crs : str
-        Coordinate system. The default is ``'epsg:2056'``
-    res : tuple
-        The (x, y) resolution of the dataset. The default is ``(100, 100)``
+    index_column : str, optional
+        Label of the index column. If `None` is provided, the value set in
+        `settings.DEFAULT_INDEX_COLUMN` will be taken.    
+    x_column : str, optional
+        Label of the x-coordinates column. If `None` is provided, the value
+        set in `settings.DEFAULT_X_COLUMN` will be taken.    
+    y_column : str, optional
+        Label of the y-coordinates column. If `None` is provided, the value
+        set in `settings.DEFAULT_Y_COLUMN` will be taken.    
+    crs : rasterio CRS, optional
+        Coordinate reference system, as a rasterio CRS object. If `None` is
+        provided, the value set in `settings.DEFAULT_CRS` will be taken.
+    res : tuple, optional
+        The (x, y) resolution of the dataset. If `None` is provided, the value
+        set in `settings.DEFAULT_RES` will be taken.
+    read_csv_kws : dict-like, optional
+        Keyword arguments to be passed to `pandas.read_csv`
+    df_init_kws : dict-like, optional
+        Keyword arguments to be passed to `pandas.read_csv`
 
     Returns
     -------
     result : LandDataFrame
     """
-    if crs:
-        kwargs['crs'] = crs
-    if res:
-        kwargs['res'] = res
-    df = pd.read_csv(filepath_or_buffer, *args, **kwargs)
-    return LandDataFrame(df, *args, **kwargs)
+    if read_csv_kws is None:
+        read_csv_kws = {}
+    df = pd.read_csv(filepath_or_buffer, **read_csv_kws)
+
+    if df_init_kws is None:
+        df_init_kws = {}
+    return LandDataFrame(df, crs=crs, res=res, index_column=index_column,
+                         x_column=x_column, y_column=y_column, **df_init_kws)
