@@ -3,15 +3,12 @@
 from setuptools import setup
 
 long_description = """
-Python tools for the Swiss Land Statistics datasets from the Swiss Federal
-Statistical Office. The current features are:
-* Automatically transform files from the Swiss Federal Statistical Office into
-  dataframes
-* Transform categorical land use/land cover information into numpy arrays and
-  GeoTIFF files
-* Plot categorical land use/land cover information with legend and the
-  appropriate color map
+Python tools for the Swiss Federal Statistics Geodata (GEOSTAT). The current
+features are:
+* Automatically read CSV files from the GEOSTAT inventory into dataframes
+* Export columns into `numpy` arrays and `GeoTIFF` files
 * Clip dataframes by vector geometries
+* Plot information as raster maps
 """
 
 
@@ -40,7 +37,7 @@ def setup_package():
     setup(
         name='swisslandstats-geopy',
         version='0.8.0',
-        description='Python for the land statistics datasets from the SFSO',
+        description='Python for the Swiss Federal Statistics Geodata',
         long_description=long_description,
         long_description_content_type='text/markdown',
         url='https://github.com/martibosch/swisslandstats-geopy',
