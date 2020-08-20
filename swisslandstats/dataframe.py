@@ -133,7 +133,7 @@ class LandDataFrame(pd.DataFrame):
         i = (y - min(y)) // yres
         j = (x - min(x)) // xres
 
-        lulc_arr = np.nan * np.empty((len(set(i)), len(set(j))))
+        lulc_arr = np.full((i.max() + 1, j.max() + 1), np.nan)
         lulc_arr[-i, j] = z
         lulc_arr[np.isnan(lulc_arr)] = nodata
 
