@@ -1,5 +1,12 @@
 # Change log
 
+## 0.8.0 (20/08/2020)
+
+* corrected init of `lulc_arr` in `to_ndarray` method
+* install rasterio from conda-forge in travis to avoid CRS errors
+* use `gpd.sjoin` in `clip_by_geometry`
+* index/x/y columns as instance attrs, updated init/read_csv args
+
 ## 0.7.3 (17/01/2020)
 
 * updated CRS in settings to `'<authority>:<code>'` syntax
