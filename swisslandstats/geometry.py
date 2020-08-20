@@ -120,6 +120,7 @@ def clip_by_geometry(ldf, geometry, geometry_crs=None):
         # TODO: it'd be cool to 'cache' the GeoSeries (maybe as an
         # attribute of LandDataFrame)
 
+        gdf = gpd.GeoDataFrame({'geometry': [geometry]}, crs=geometry_crs)
         if geometry_crs != ldf.crs:
             # alternative with osmnx (slower):
             # geometry = ox.project_geometry(geometry, to_crs=ls_ldf.crs)
@@ -127,21 +128,13 @@ def clip_by_geometry(ldf, geometry, geometry_crs=None):
             # geometry = transform(
             #     partial(pyproj.transform, pyproj.Proj(**geometry_crs),
             #             pyproj.Proj(**ldf.crs)), geometry)
-            geometry = gpd.GeoDataFrame({
-                'geometry': [geometry]
-            }, crs=geometry_crs).to_crs(ldf.crs)['geometry'].iloc[0]
+            gdf = gdf.to_crs(ldf.crs)
 
-        # first clip by polygon bounds without geopandas
-        xmin, ymin, xmax, ymax = geometry.bounds
-        x_column, y_column = ldf.x_column, ldf.y_column
-        bounds_ldf = ldf[(ldf[x_column] > xmin) & (ldf[x_column] < xmax) &
-                         (ldf[y_column] > ymin) & (ldf[y_column] < ymax)]
-
-        gser = gpd.GeoSeries(
-            map(Point, bounds_ldf[[x_column, y_column]].values),
-            index=bounds_ldf.index)
-
-        return bounds_ldf[gser.within(geometry)]
+        return ldf.loc[gpd.sjoin(
+            gpd.GeoDataFrame(
+                geometry=gpd.points_from_xy(ldf[ldf.x_column],
+                                            ldf[ldf.y_column], crs=ldf.crs),
+                index=ldf.index), gdf, how='inner', op='within').index]
 
     else:
         # warn about missing dependences
