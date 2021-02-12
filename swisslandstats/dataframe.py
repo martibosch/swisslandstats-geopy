@@ -107,7 +107,7 @@ class LandDataFrame(pd.DataFrame):
         y_origin = max(y) + yres // 2
         return from_origin(x_origin, y_origin, xres, yres)
 
-    def to_ndarray(self, column, nodata=0, dtype=np.uint8):
+    def to_ndarray(self, column, nodata=0, dtype='uint8'):
         """
         Convert a LULC column to a numpy array
 
@@ -139,7 +139,7 @@ class LandDataFrame(pd.DataFrame):
 
         return lulc_arr.astype(dtype)
 
-    def to_geotiff(self, fp, column, nodata=0, dtype=rasterio.uint8):
+    def to_geotiff(self, fp, column, nodata=0, dtype='uint8'):
         """
         Export a LULC column to a GeoTIFF file
 
