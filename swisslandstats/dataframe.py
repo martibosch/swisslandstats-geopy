@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import rasterio as rio
 from rasterio import transform
+from rasterio.crs import CRS
 
 from . import geometry as sls_geometry
 from . import plotting, settings
@@ -58,9 +59,11 @@ class LandDataFrame(pd.DataFrame):
     y_column : str, optional
         Label of the y-coordinates column. If `None` is provided, the value
         set in `settings.DEFAULT_Y_COLUMN` will be taken.    
-    crs : rasterio CRS, optional
-        Coordinate reference system, as a rasterio CRS object. If `None` is
-        provided, the value set in `settings.DEFAULT_CRS` will be taken.
+    crs : str or rasterio CRS, optional
+        Coordinate reference system, as string or as rasterio CRS object. If a
+        string is provided, it will be passed to `rasterio.crs.CRS.from_string`
+        to instantiatie a rasterio CRS object. If `None` is provided, the value
+        set in `settings.DEFAULT_CRS` will be taken.
     res : tuple, optional
         The (x, y) resolution of the dataset. If `None` is provided, the value
         set in `settings.DEFAULT_RES` will be taken.
@@ -88,7 +91,9 @@ class LandDataFrame(pd.DataFrame):
         if y_column is None:
             y_column = settings.DEFAULT_Y_COLUMN
         if crs is None:
-            crs = settings.DEFAULT_CRS
+            crs = CRS.from_string(settings.DEFAULT_CRS)
+        elif isinstance(crs, str):
+            crs = CRS.from_string(crs)
         if res is None:
             res = settings.DEFAULT_RES
 

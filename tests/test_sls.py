@@ -6,35 +6,42 @@ def test_base_imports():
     import numpy as np
     import pandas as pd
     import rasterio
-
     from matplotlib import colors
-    from rasterio.transform import from_origin
+    from rasterio import transform
+    from rasterio.crs import CRS
 
 
 def test_geo_imports():
+    from functools import partial
+
     import geopandas as gpd
     import pyproj
-
-    from functools import partial
     from shapely.geometry import Point
     from shapely.ops import transform
 
 
 def test_slsdataframe():
     import tempfile
+
     import matplotlib.pyplot as plt
-    plt.switch_backend('agg')  # only for testing purposes
     import numpy as np
     import pandas as pd
+    from rasterio.crs import CRS
 
+    plt.switch_backend('agg')  # only for testing purposes
+
+    # test instantiation
+    for crs in [None, 'epsg:2056', CRS.from_string('epsg:2056')]:
+        assert isinstance(sls.read_csv('tests/input_data/dataset.csv').crs, CRS)
+
+    # test basic features and pandas-like transformations
     ldf = sls.read_csv('tests/input_data/dataset.csv')
-
     assert np.all(
         ldf.to_ndarray('AS09_4') == np.arange(4, dtype=np.uint8).reshape(2, 2))
     ldf.to_geotiff(tempfile.TemporaryFile(), 'AS09_4')
 
-    assert isinstance(
-        ldf.plot('AS09_4', cmap=sls.noas04_4_cmap, legend=True), plt.Axes)
+    assert isinstance(ldf.plot('AS09_4', cmap=sls.noas04_4_cmap, legend=True),
+                      plt.Axes)
 
     assert type(ldf[[ldf.x_column, ldf.y_column,
                      'AS09_4']]) == sls.LandDataFrame
@@ -47,7 +54,7 @@ def test_slsdataframe():
     ldf2['AS85_4'] = pd.Series(1, index=ldf.index[:-1], name='AS85_4')
     ldf2 = ldf2.drop('AS09_4', axis=1)
     merged_ldf = ldf.merge(ldf2)
-
+n
     assert 'AS85_4' in merged_ldf.columns.difference(ldf.columns)
     # to test for the presence of nan: merged_ldf['AS85_4'].isna().any()
     assert np.sum(merged_ldf['AS85_4'].isna()) == 1
