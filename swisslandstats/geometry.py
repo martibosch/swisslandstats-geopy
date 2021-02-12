@@ -4,7 +4,6 @@ from . import settings
 
 try:
     import geopandas as gpd
-
     from shapely.geometry import Point
     from shapely.ops import transform
 except ImportError:
@@ -145,11 +144,11 @@ def clip_by_geometry(ldf, geometry, geometry_crs=None):
 clip_by_geometry.__doc__ = _clip_by_geometry_doc % '\nldf : LandDataFrame'
 
 
-def clip_by_nominatim(ldf, query, **gdf_from_place_kws):
+def clip_by_nominatim(ldf, query, **geocode_to_gdf_kws):
     if ox:
         try:
-            geometry = ox.gdf_from_place(
-                query, **gdf_from_place_kws)['geometry'].iloc[0]
+            geometry = ox.geocode_to_gdf(
+                query, **geocode_to_gdf_kws)['geometry'].iloc[0]
             return clip_by_geometry(ldf, geometry,
                                     geometry_crs=ox.settings.default_crs)
 
