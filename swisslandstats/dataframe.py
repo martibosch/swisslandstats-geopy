@@ -2,8 +2,8 @@ from __future__ import division
 
 import numpy as np
 import pandas as pd
-import rasterio
-from rasterio.transform import from_origin
+import rasterio as rio
+from rasterio import transform
 
 from . import geometry as sls_geometry
 from . import plotting, settings
@@ -105,7 +105,7 @@ class LandDataFrame(pd.DataFrame):
 
         x_origin = min(x) - xres // 2
         y_origin = max(y) + yres // 2
-        return from_origin(x_origin, y_origin, xres, yres)
+        return transform.from_origin(x_origin, y_origin, xres, yres)
 
     def to_ndarray(self, column, nodata=0, dtype='uint8'):
         """
@@ -157,10 +157,10 @@ class LandDataFrame(pd.DataFrame):
         """
         lulc_arr = self.to_ndarray(column, nodata, dtype)
 
-        with rasterio.open(fp, 'w', driver='GTiff', height=lulc_arr.shape[0],
-                           width=lulc_arr.shape[1], count=1, dtype=str(dtype),
-                           nodata=0, crs=self.crs,
-                           transform=self.get_transform()) as raster:
+        with rio.open(fp, 'w', driver='GTiff', height=lulc_arr.shape[0],
+                      width=lulc_arr.shape[1], count=1, dtype=str(dtype),
+                      nodata=0, crs=self.crs,
+                      transform=self.get_transform()) as raster:
             raster.write(lulc_arr.astype(dtype), 1)
 
     def plot(self, column, cmap=None, legend=False, figsize=None, ax=None,
