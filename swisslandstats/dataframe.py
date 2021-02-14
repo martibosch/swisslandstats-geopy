@@ -3,6 +3,7 @@ from __future__ import division
 import numpy as np
 import pandas as pd
 import rasterio as rio
+import xarray as xr
 from rasterio import transform
 from rasterio.crs import CRS
 
@@ -112,6 +113,11 @@ class LandDataFrame(pd.DataFrame):
         y_origin = max(y) + yres // 2
         return transform.from_origin(x_origin, y_origin, xres, yres)
 
+    def _to_ndarray(self, column, i, j, nodata, dtype):
+        lulc_arr = np.full((i.max() + 1, j.max() + 1), nodata)
+        lulc_arr[-i, j] = self[column].values
+        return lulc_arr.astype(dtype)
+
     def to_ndarray(self, column, nodata=0, dtype='uint8'):
         """
         Convert a LULC column to a numpy array
@@ -132,17 +138,62 @@ class LandDataFrame(pd.DataFrame):
         """
         x = self[self.x_column].values
         y = self[self.y_column].values
-        z = self[column].values
 
         xres, yres = self.res
         i = (y - min(y)) // yres
         j = (x - min(x)) // xres
 
-        lulc_arr = np.full((i.max() + 1, j.max() + 1), np.nan)
-        lulc_arr[-i, j] = z
-        lulc_arr[np.isnan(lulc_arr)] = nodata
+        return self._to_ndarray(column, i, j, nodata, dtype)
 
-        return lulc_arr.astype(dtype)
+    def to_xarray(self, columns, dim_name='time', nodata=0, dtype='uint8'):
+        """
+        Convert a LULC column to a xarray data array
+     
+        Parameters
+        ----------
+        columns : str or list of str
+            name or names of the LULC columns
+        dim_name : str
+            name of the outermost dimension set by the `columns` argument
+        nodata : numeric
+            value to be assigned to pixels with no data
+        dtype : str or numpy dtype
+            the data type
+
+        Returns
+        -------
+        da : xr.DataArray
+            A xarray data array
+        """
+
+        x = self[self.x_column].values
+        y = self[self.y_column].values
+
+        xres, yres = self.res
+        i = (y - min(y)) // yres
+        j = (x - min(x)) // xres
+
+        # ensure that `columns` is a list
+        if isinstance(columns, str):
+            columns = [columns]
+        # use a head-tail iteration pattern to get the array shape and prepare
+        # the pixel coordinates
+        arr = self._to_ndarray(columns[0], i, j, nodata, dtype)
+        num_rows, num_cols = arr.shape
+        _transform = self.get_transform()
+        cols = np.arange(num_cols)
+        rows = np.arange(num_rows)
+        x_coords, _ = transform.xy(_transform, cols, cols)
+        _, y_coords = transform.xy(_transform, rows, rows)
+
+        return xr.DataArray([arr] + [
+            self._to_ndarray(column, i, j, nodata, dtype)
+            for column in columns[1:]
+        ], dims=[dim_name, self.y_column, self.x_column], coords={
+            self.x_column: x_coords,
+            self.y_column: y_coords,
+            dim_name: columns
+        }, attrs=dict(nodata=nodata, pyproj_srs=f'epsg:{self.crs.to_epsg()}'))
 
     def to_geotiff(self, fp, column, nodata=0, dtype='uint8'):
         """

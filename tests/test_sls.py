@@ -6,6 +6,7 @@ def test_base_imports():
     import numpy as np
     import pandas as pd
     import rasterio
+    import xarray as xr
     from matplotlib import colors
     from rasterio import transform
     from rasterio.crs import CRS
@@ -26,13 +27,15 @@ def test_slsdataframe():
     import matplotlib.pyplot as plt
     import numpy as np
     import pandas as pd
+    import xarray as xr
     from rasterio.crs import CRS
 
     plt.switch_backend('agg')  # only for testing purposes
 
     # test instantiation
     for crs in [None, 'epsg:2056', CRS.from_string('epsg:2056')]:
-        assert isinstance(sls.read_csv('tests/input_data/dataset.csv').crs, CRS)
+        assert isinstance(
+            sls.read_csv('tests/input_data/dataset.csv').crs, CRS)
 
     # test basic features and pandas-like transformations
     ldf = sls.read_csv('tests/input_data/dataset.csv')
@@ -54,7 +57,7 @@ def test_slsdataframe():
     ldf2['AS85_4'] = pd.Series(1, index=ldf.index[:-1], name='AS85_4')
     ldf2 = ldf2.drop('AS09_4', axis=1)
     merged_ldf = ldf.merge(ldf2)
-n
+
     assert 'AS85_4' in merged_ldf.columns.difference(ldf.columns)
     # to test for the presence of nan: merged_ldf['AS85_4'].isna().any()
     assert np.sum(merged_ldf['AS85_4'].isna()) == 1
@@ -62,6 +65,29 @@ n
     # test that `get_transform` returns a different transform if, e.g., we
     # change the min x or max y value
     assert ldf.get_transform() != ldf.iloc[:2].get_transform()
+
+    # test export to xarray
+    ldf = sls.read_csv('tests/input_data/dataset.csv')
+    ldf['AS85_4'] = pd.Series(1, index=ldf.index[:-1], name='AS85_4')
+    columns = ['AS85_4', 'AS09_4']
+    assert isinstance(ldf.to_xarray(columns), xr.DataArray)
+    # test that columns are the outermost dimension
+    assert ldf.to_xarray(columns).shape[0] == len(columns)
+    num_cols = 1
+    assert ldf.to_xarray(columns[:num_cols]).shape[0] == num_cols
+    # test that the name of the outermost dimension is set
+    dim_name = 'survey'
+    da = ldf.to_xarray(columns, dim_name=dim_name)
+    assert dim_name in da.dims
+    assert np.all(da.coords[dim_name] == columns)
+    # test that the data array metadata is set
+    nodata = 255
+    attrs = ldf.to_xarray(columns, nodata=nodata).attrs
+    assert attrs['nodata'] == nodata
+    assert 'pyproj_srs' in attrs
+    # test that the data array has the proper dtype
+    dtype = 'uint16'
+    assert ldf.to_xarray(columns, dtype=dtype).dtype == dtype
 
 
 def test_geometry():
