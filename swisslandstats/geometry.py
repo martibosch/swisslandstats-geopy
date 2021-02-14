@@ -1,3 +1,5 @@
+"""Geo utils."""
+
 import logging
 
 from . import settings
@@ -5,7 +7,6 @@ from . import settings
 try:
     import geopandas as gpd
     from shapely.geometry import Point
-    from shapely.ops import transform
 except ImportError:
     gpd = None
 
@@ -15,7 +16,10 @@ except ImportError:
     ox = None
 
 __all__ = [
-    'get_geoseries', 'to_geodataframe', 'clip_by_geometry', 'clip_by_nominatim'
+    "get_geoseries",
+    "to_geodataframe",
+    "clip_by_geometry",
+    "clip_by_nominatim",
 ]
 
 _gpd_warning_msg = """
@@ -86,13 +90,16 @@ def get_geoseries(ldf):
     if gpd:
         return gpd.GeoSeries(
             map(Point, ldf[[ldf.x_column, ldf.y_column]].values),
-            index=ldf.index, crs=ldf.crs)
+            index=ldf.index,
+            crs=ldf.crs,
+        )
     else:
         logging.warning(_gpd_warning_msg)
 
 
-get_geoseries.__doc__ = _get_geoseries_doc % \
-                        '\n\nParameters\n----------\nldf : LandDataFrame'
+get_geoseries.__doc__ = (
+    _get_geoseries_doc % "\n\nParameters\n----------\nldf : LandDataFrame"
+)
 
 
 def to_geodataframe(ldf, drop_xy_columns=True):
@@ -108,7 +115,7 @@ def to_geodataframe(ldf, drop_xy_columns=True):
         return gpd.GeoDataFrame(_ldf, crs=gser.crs, geometry=gser)
 
 
-to_geodataframe.__doc__ = _to_geodataframe_doc % '\nldf : LandDataFrame'
+to_geodataframe.__doc__ = _to_geodataframe_doc % "\nldf : LandDataFrame"
 
 
 def clip_by_geometry(ldf, geometry, geometry_crs=None):
@@ -119,7 +126,7 @@ def clip_by_geometry(ldf, geometry, geometry_crs=None):
         # TODO: it'd be cool to 'cache' the GeoSeries (maybe as an
         # attribute of LandDataFrame)
 
-        gdf = gpd.GeoDataFrame({'geometry': [geometry]}, crs=geometry_crs)
+        gdf = gpd.GeoDataFrame({"geometry": [geometry]}, crs=geometry_crs)
         if geometry_crs != ldf.crs:
             # alternative with osmnx (slower):
             # geometry = ox.project_geometry(geometry, to_crs=ls_ldf.crs)
@@ -129,11 +136,19 @@ def clip_by_geometry(ldf, geometry, geometry_crs=None):
             #             pyproj.Proj(**ldf.crs)), geometry)
             gdf = gdf.to_crs(ldf.crs)
 
-        return ldf.loc[gpd.sjoin(
-            gpd.GeoDataFrame(
-                geometry=gpd.points_from_xy(ldf[ldf.x_column],
-                                            ldf[ldf.y_column], crs=ldf.crs),
-                index=ldf.index), gdf, how='inner', op='within').index]
+        return ldf.loc[
+            gpd.sjoin(
+                gpd.GeoDataFrame(
+                    geometry=gpd.points_from_xy(
+                        ldf[ldf.x_column], ldf[ldf.y_column], crs=ldf.crs
+                    ),
+                    index=ldf.index,
+                ),
+                gdf,
+                how="inner",
+                op="within",
+            ).index
+        ]
 
     else:
         # warn about missing dependences
@@ -141,21 +156,22 @@ def clip_by_geometry(ldf, geometry, geometry_crs=None):
         logging.warning(_gpd_warning_msg)
 
 
-clip_by_geometry.__doc__ = _clip_by_geometry_doc % '\nldf : LandDataFrame'
+clip_by_geometry.__doc__ = _clip_by_geometry_doc % "\nldf : LandDataFrame"
 
 
 def clip_by_nominatim(ldf, query, **geocode_to_gdf_kws):
     if ox:
         try:
-            geometry = ox.geocode_to_gdf(
-                query, **geocode_to_gdf_kws)['geometry'].iloc[0]
-            return clip_by_geometry(ldf, geometry,
-                                    geometry_crs=ox.settings.default_crs)
+            geometry = ox.geocode_to_gdf(query, **geocode_to_gdf_kws)["geometry"].iloc[
+                0
+            ]
+            return clip_by_geometry(ldf, geometry, geometry_crs=ox.settings.default_crs)
 
         except KeyError:
             logging.warning(
-                'OSM returned no results (or fewer than which_result) for '
-                'query "{}".\n Returning empty SLSDataFrame'.format(query))
+                "OSM returned no results (or fewer than which_result) for "
+                'query "{}".\n Returning empty SLSDataFrame'.format(query)
+            )
             return ldf[0:0]
 
     else:
@@ -165,7 +181,8 @@ def clip_by_nominatim(ldf, query, **geocode_to_gdf_kws):
             "The easiest wayto install it is as in\n"
             "conda install -c conda-forge osmnx"
             "See https://github.com/gboeing/osmnx for more information "
-            "about installing osmnx")
+            "about installing osmnx"
+        )
 
 
-clip_by_nominatim.__doc__ = _clip_by_nominatim_doc % '\nldf : LandDataFrame'
+clip_by_nominatim.__doc__ = _clip_by_nominatim_doc % "\nldf : LandDataFrame"

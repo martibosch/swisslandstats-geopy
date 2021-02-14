@@ -1,5 +1,0 @@
-bumpversion
-coverage
-coveralls
-pytest
-sphinx

@@ -1,8 +1,8 @@
 [![PyPI version fury.io](https://badge.fury.io/py/swisslandstats-geopy.svg)](https://pypi.python.org/pypi/swisslandstats-geopy/)
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/swisslandstats-geopy.svg)](https://anaconda.org/conda-forge/swisslandstats-geopy)
 [![Documentation Status](https://readthedocs.org/projects/swisslandstats-geopy/badge/?version=latest)](https://swisslandstats-geopy.readthedocs.io/en/latest/?badge=latest)
-[![Build Status](https://travis-ci.org/martibosch/swisslandstats-geopy.svg?branch=master)](https://travis-ci.org/martibosch/swisslandstats-geopy)
-[![Coverage Status](https://coveralls.io/repos/github/martibosch/swisslandstats-geopy/badge.svg?branch=master)](https://coveralls.io/github/martibosch/swisslandstats-geopy?branch=master)
+[![Build Status](https://github.com/martibosch/swisslandstats-geopy/workflows/tests/badge.svg?branch=main)](https://github.com/martibosch/swisslandstats-geopy/actions?query=workflow%3A%22tests%22)
+[![codecov](https://codecov.io/gh/martibosch/swisslandstats-geopy/branch/main/graph/badge.svg)](https://codecov.io/gh/martibosch/swisslandstats-geopy)
 [![GitHub license](https://img.shields.io/github/license/martibosch/swisslandstats-geopy.svg)](https://github.com/martibosch/swisslandstats-geopy/blob/master/LICENSE.txt)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/martibosch/swisslandstats-geopy/master?filepath=examples/overview.ipynb)
 [![status](http://joss.theoj.org/papers/b6de0f096382d4dcd5d137a3f1edcb30/status.svg)](http://joss.theoj.org/papers/b6de0f096382d4dcd5d137a3f1edcb30)
@@ -16,7 +16,7 @@ Extended pandas-like interface for the [Swiss Federal Statistics Geodata (GEOSTA
 
 Many datasets of the GEOSTAT inventory are provided in a relational database format which allows storing a coolection of variables into a single CSV file, nevertheless, libraries to process geographical raster data aree rarely capable of processing such format. Therefore, the aim of `swisslandstats-geopy` is to provide an extended pandas `DataFrame` interface to such inventory (see [the "Features" section below](#features)).
 
-The target audience of `swisslandstats-geopy` is researchers and developers in environmental sciences and GIS, who intend to produce repeatable and reproducible computational workflows that make use of the geodata inventory provided by the SFSO. 
+The target audience of `swisslandstats-geopy` is researchers and developers in environmental sciences and GIS, who intend to produce repeatable and reproducible computational workflows that make use of the geodata inventory provided by the SFSO.
 
 ## Features
 
@@ -62,10 +62,10 @@ conda install -c conda-forge swisslandstats-geopy
 If you want to be able to clip dataframes by vector geometries, you will need [geopandas](https://github.com/geopandas/geopandas) (and [osmnx](https://github.com/gboeing/osmnx) to clip dataframes from place names e.g., "Zurich, Switzerland"). The easiest way to install such requirements is via conda as in:
 
 ``` bash
-conda install -c conda-forge geopandas osmnx rasterio 
+conda install -c conda-forge geopandas osmnx rasterio
 ```
 
-Although [rasterio](https://github.com/mapbox/rasterio) can be installed via pip, it is recommended to install it via conda to avoid potential issues with GDAL (such as the support of the Swiss EPSG coordinate reference systems). 
+Although [rasterio](https://github.com/mapbox/rasterio) can be installed via pip, it is recommended to install it via conda to avoid potential issues with GDAL (such as the support of the Swiss EPSG coordinate reference systems).
 
 Then you can install `swisslandstats-geopy` via pip as in:
 

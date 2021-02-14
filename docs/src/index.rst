@@ -42,7 +42,7 @@ The easiest way to install `swisslandstats-geopy` is with conda as in:
 With pip
 ^^^^^^^^
 
-If you want to be able to clip dataframes by vector geometries, you will need `geopandas <https://github.com/geopandas/geopandas`_ (and `osmnx <https://github.com/gboeing/osmnx>`_ to clip dataframes from place names e.g., "Zurich, Switzerland"). The easiest way to install such requirements is via conda as in:
+If you want to be able to clip dataframes by vector geometries, you will need `geopandas <https://github.com/geopandas/geopandas>`_ (and `osmnx <https://github.com/gboeing/osmnx>`_ to clip dataframes from place names e.g., "Zurich, Switzerland"). The easiest way to install such requirements is via conda as in:
 
     $ conda install -c conda-forge geopandas osmnx rasterio 
 
