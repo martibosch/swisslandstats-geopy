@@ -40,9 +40,9 @@ class LandDataFrame(pd.DataFrame):
     """
     A LandDataFrame object is a pandas.DataFrame extended to deal with the land
     statistics files provided by the Swiss Federal Statistical Office (SFSO).
-    Each row of a SLSDataFrame represents a pixel of a raster landscape, with
+    Each row of a LandDataFrame represents a pixel of a raster landscape, with
     the 'x' and 'y' that depict the centroid of the pixel, as well as a set of
-    land use/land cover (LULC) information columns.
+    data columns.
 
     The default parameters are defined to work with SFSO data out-of-the-box,
     but they can be modified through the following keyword arguments:
@@ -53,13 +53,13 @@ class LandDataFrame(pd.DataFrame):
         Data that will be passed to the initialization method of `pd.DataFrame`
     index_column : str, optional
         Label of the index column. If `None` is provided, the value set in
-        `settings.DEFAULT_INDEX_COLUMN` will be taken.    
+        `settings.DEFAULT_INDEX_COLUMN` will be taken.
     x_column : str, optional
         Label of the x-coordinates column. If `None` is provided, the value
-        set in `settings.DEFAULT_X_COLUMN` will be taken.    
+        set in `settings.DEFAULT_X_COLUMN` will be taken.
     y_column : str, optional
         Label of the y-coordinates column. If `None` is provided, the value
-        set in `settings.DEFAULT_Y_COLUMN` will be taken.    
+        set in `settings.DEFAULT_Y_COLUMN` will be taken.
     crs : str or rasterio CRS, optional
         Coordinate reference system, as string or as rasterio CRS object. If a
         string is provided, it will be passed to `rasterio.crs.CRS.from_string`
@@ -114,18 +114,18 @@ class LandDataFrame(pd.DataFrame):
         return transform.from_origin(x_origin, y_origin, xres, yres)
 
     def _to_ndarray(self, column, i, j, nodata, dtype):
-        lulc_arr = np.full((i.max() + 1, j.max() + 1), nodata)
-        lulc_arr[-i, j] = self[column].values
-        return lulc_arr.astype(dtype)
+        arr = np.full((i.max() + 1, j.max() + 1), nodata)
+        arr[-i, j] = self[column].values
+        return arr.astype(dtype)
 
     def to_ndarray(self, column, nodata=0, dtype='uint8'):
         """
-        Convert a LULC column to a numpy array
+        Convert a data column to a numpy array
 
         Parameters
         ----------
         column : str
-            name of the LULC column
+            name of the data column
         nodata : numeric
             value to be assigned to pixels with no data
         dtype : str or numpy dtype
@@ -133,8 +133,8 @@ class LandDataFrame(pd.DataFrame):
 
         Returns
         -------
-        lulc_arr : np.ndarray
-            A LULC array
+        arr : np.ndarray
+            A raster array
         """
         x = self[self.x_column].values
         y = self[self.y_column].values
@@ -147,12 +147,12 @@ class LandDataFrame(pd.DataFrame):
 
     def to_xarray(self, columns, dim_name='time', nodata=0, dtype='uint8'):
         """
-        Convert a LULC column to a xarray data array
-     
+        Convert a data column to a xarray data array
+
         Parameters
         ----------
         columns : str or list of str
-            name or names of the LULC columns
+            name or names of the data columns
         dim_name : str
             name of the outermost dimension set by the `columns` argument
         nodata : numeric
@@ -197,7 +197,7 @@ class LandDataFrame(pd.DataFrame):
 
     def to_geotiff(self, fp, column, nodata=0, dtype='uint8'):
         """
-        Export a LULC column to a GeoTIFF file
+        Export a data column to a GeoTIFF file
 
         Parameters
         ----------
@@ -205,25 +205,24 @@ class LandDataFrame(pd.DataFrame):
             A filename or URL, a file object opened in binary ('rb') mode,
             or a Path object.
         column : str
-            name of the LULC column
+            name of the data column
         nodata : numeric
             value to be assigned to pixels with no data
         dtype : str or numpy dtype
             the data type
         """
-        lulc_arr = self.to_ndarray(column, nodata, dtype)
+        arr = self.to_ndarray(column, nodata, dtype)
 
-        with rio.open(fp, 'w', driver='GTiff', height=lulc_arr.shape[0],
-                      width=lulc_arr.shape[1], count=1, dtype=str(dtype),
-                      nodata=0, crs=self.crs,
-                      transform=self.get_transform()) as raster:
-            raster.write(lulc_arr.astype(dtype), 1)
+        with rio.open(fp, 'w', driver='GTiff', height=arr.shape[0],
+                      width=arr.shape[1], count=1, dtype=str(dtype), nodata=0,
+                      crs=self.crs, transform=self.get_transform()) as raster:
+            raster.write(arr.astype(dtype), 1)
 
     def plot(self, column, cmap=None, legend=False, figsize=None, ax=None,
              **show_kws):
         # TODO: automatically assign cmaps according to columns
-        lulc_arr = self.to_ndarray(column)
-        return plotting.plot_ndarray(lulc_arr, transform=self.get_transform(),
+        arr = self.to_ndarray(column)
+        return plotting.plot_ndarray(arr, transform=self.get_transform(),
                                      cmap=cmap, legend=legend, figsize=figsize,
                                      ax=ax, **show_kws)
 
@@ -297,7 +296,7 @@ def read_csv(filepath_or_buffer, index_column=None, x_column=None,
              y_column=None, crs=None, res=None, read_csv_kws=None,
              df_init_kws=None):
     """
-    Convert a LULC column to a numpy array. See also the documentation for
+    Read a CSV file into a LandDataFrame. See also the documentation for
     `pandas.read_csv`.
 
     Parameters
@@ -309,13 +308,13 @@ def read_csv(filepath_or_buffer, index_column=None, x_column=None,
         could be file://localhost/path/to/table.csv
     index_column : str, optional
         Label of the index column. If `None` is provided, the value set in
-        `settings.DEFAULT_INDEX_COLUMN` will be taken.    
+        `settings.DEFAULT_INDEX_COLUMN` will be taken.
     x_column : str, optional
         Label of the x-coordinates column. If `None` is provided, the value
-        set in `settings.DEFAULT_X_COLUMN` will be taken.    
+        set in `settings.DEFAULT_X_COLUMN` will be taken.
     y_column : str, optional
         Label of the y-coordinates column. If `None` is provided, the value
-        set in `settings.DEFAULT_Y_COLUMN` will be taken.    
+        set in `settings.DEFAULT_Y_COLUMN` will be taken.
     crs : rasterio CRS, optional
         Coordinate reference system, as a rasterio CRS object. If `None` is
         provided, the value set in `settings.DEFAULT_CRS` will be taken.
