@@ -1,5 +1,13 @@
 # Change log
 
+## 0.9.0 (30/09/2021)
+
+* updated to pre-commit, black, pydocstyle, github actions, codecov
+* added `to_xarray` method
+* init `LandDataFrame.crs` from settings as rasterio CRS
+* str as default `dtype` arg
+* updated to osmnx>=1
+
 ## 0.8.0 (20/08/2020)
 
 * corrected init of `lulc_arr` in `to_ndarray` method
