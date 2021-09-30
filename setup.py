@@ -34,7 +34,7 @@ geo_reqs = reqs.pop("geo")
 
 setup(
     name="swisslandstats-geopy",
-    version="0.8.0",
+    version="0.9.0",
     description="Python for the Swiss Federal Statistics Geodata",
     long_description=long_description,
     long_description_content_type="text/markdown",
