@@ -1,0 +1,9 @@
+[tool.black]
+line-length = 88
+
+[tool.isort]
+known_first_party = "swisslandstats"
+default_section = "THIRDPARTY"
+forced_separate = "test_swisslandstats"
+profile = "black"
+skip = "setup.py"
