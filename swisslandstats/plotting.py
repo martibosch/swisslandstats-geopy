@@ -5,20 +5,26 @@ import numpy as np
 from matplotlib import colors
 from rasterio.plot import show
 
-__all__ = ["noas04_4_cmap", "plot_ndarray"]
+__all__ = ["noas04_4_cmap", "noas04_4_norm", "plot_ndarray"]
 
-_nodata_c = (1, 1, 1, 0)  # transparent white
+_nodata_code = 0
+_nodata_color = (1, 1, 1, 0)  # transparent white
 _noas04_4_cdict = {  # based on Corine's land cover nomenclature Level 1
+    _nodata_code: _nodata_color,
     1: (0.9019607843137255, 0, 0.30196078431372547, 1),
     2: (1, 1, 0.6588235294117647, 1),
     3: (0.5019607843137255, 1, 0, 1),
     4: (0, 0.8, 0.9490196078431372, 1),
 }
+_noas04_4_codes = [_nodata_code] + list(_noas04_4_cdict.keys())
 
 noas04_4_cmap = colors.ListedColormap(
-    [_noas04_4_cdict[key] if key in _noas04_4_cdict else _nodata_c for key in range(5)],
+    [_noas04_4_cdict[code] for code in _noas04_4_codes],
     name="noas04_4",
-    N=5,
+    N=len(_noas04_4_codes),
+)
+noas04_4_norm = colors.BoundaryNorm(
+    _noas04_4_codes + [len(_noas04_4_codes)], noas04_4_cmap.N
 )
 
 _plot_ndarray_doc = """

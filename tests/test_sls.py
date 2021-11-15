@@ -29,6 +29,7 @@ def test_slsdataframe():
 
     import matplotlib.pyplot as plt
     import numpy as np
+    import osmnx as ox
     import pandas as pd
     import xarray as xr
     from rasterio.crs import CRS
@@ -46,8 +47,26 @@ def test_slsdataframe():
     )
     ldf.to_geotiff(tempfile.TemporaryFile(), "AS09_4")
 
+    # test plots
     assert isinstance(ldf.plot("AS09_4", cmap=sls.noas04_4_cmap, legend=True), plt.Axes)
+    # test noas04_4_cmap. TODO: DRY this test??
+    arr = ldf.to_ndarray("AS18_4")
+    # if we do not use the `norm` arg and there is no "nodata" value in our land data
+    # frame, the "nodata" color will actually be assigned to an actual valid color
+    ax_no_norm = ldf.plot("AS18_4", cmap=sls.noas04_4_cmap)
+    im_no_norm = ax_no_norm.get_images()[0]
+    assert np.all(
+        im_no_norm.cmap(im_no_norm.norm(np.unique(arr)))[0]
+        == sls.plotting._nodata_color
+    )
+    # instead, when we use the `norm` arg, the colors are properly assigned
+    ax_norm = ldf.plot("AS18_4", cmap=sls.noas04_4_cmap, norm=sls.noas04_4_norm)
+    im_norm = ax_norm.get_images()[0]
+    assert np.all(
+        im_norm.cmap(im_norm.norm(np.unique(arr)))[0] != sls.plotting._nodata_color
+    )
 
+    # test data frame types
     assert type(ldf[[ldf.x_column, ldf.y_column, "AS09_4"]]) == sls.LandDataFrame
     assert type(ldf[[ldf.x_column, "AS09_4"]]) == pd.DataFrame
     assert type(ldf["AS09_4"]) == pd.Series
