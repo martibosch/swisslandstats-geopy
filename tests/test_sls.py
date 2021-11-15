@@ -18,6 +18,7 @@ def test_geo_imports():
     from functools import partial
 
     import geopandas as gpd
+    import osmnx as ox
     import pyproj
     from shapely.geometry import Point
     from shapely.ops import transform
