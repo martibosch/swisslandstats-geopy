@@ -1,5 +1,13 @@
 # Change log
 
+## 0.10.0 (17/11/2021)
+
+* dropped support for Python 3.6
+* GitHub Actions tests in develop branch too
+* added nbstripout and nbqa pre-commit hooks, black/isort toml config
+* added noas04_4_norm for noas04_4_cmap
+* fix missing osmnx in test_geo_imports
+
 ## 0.9.0 (30/09/2021)
 
 * updated to pre-commit, black, pydocstyle, github actions, codecov
