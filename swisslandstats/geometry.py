@@ -146,7 +146,7 @@ def clip_by_geometry(ldf, geometry, geometry_crs=None):
                 ),
                 gdf,
                 how="inner",
-                op="within",
+                predicate="within",
             ).index
         ]
 
