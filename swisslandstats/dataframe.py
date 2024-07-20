@@ -29,7 +29,7 @@ left_index : boolean, default True
     parameter passed to `pandas.merge`
 right_index : boolean, default True
     parameter passed to `pandas.merge`
-**kwargs : additional keyord arguments passed to `pandas.merge`
+**kwargs : additional kewyord arguments passed to `pandas.merge`
 
 Returns
 -------
@@ -91,7 +91,7 @@ class LandDataFrame(pd.DataFrame):
             in `settings.DEFAULT_RES` will be taken.
         """
         # init the pandas dataframe
-        super(LandDataFrame, self).__init__(data, **df_init_kws)
+        super().__init__(data, **df_init_kws)
 
         # set the index
         if index_column is None:
@@ -249,7 +249,7 @@ class LandDataFrame(pd.DataFrame):
         ) as raster:
             raster.write(arr.astype(dtype), 1)
 
-    def plot(
+    def plot(  # noqa: D102
         self,
         column,
         cmap=None,
@@ -275,19 +275,19 @@ class LandDataFrame(pd.DataFrame):
         "\ncolumn : str\n    data column to display",
     )
 
-    def clip_by_geometry(self, geometry, geometry_crs=None):
+    def clip_by_geometry(self, geometry, geometry_crs=None):  # noqa: D102
         return sls_geometry.clip_by_geometry(self, geometry, geometry_crs=geometry_crs)
 
     clip_by_geometry.__doc__ = sls_geometry._clip_by_geometry_doc % ""
 
-    def clip_by_nominatim(self, query, which_result=1):
+    def clip_by_nominatim(self, query, which_result=1):  # noqa: D102
         return sls_geometry.clip_by_nominatim(self, query, which_result=which_result)
 
     clip_by_nominatim.__doc__ = sls_geometry._clip_by_nominatim_doc % ""
 
     # pandas methods
-    def __getitem__(self, key):
-        result = super(LandDataFrame, self).__getitem__(key)
+    def __getitem__(self, key):  # noqa: D105
+        result = super().__getitem__(key)
         if isinstance(result, pd.DataFrame):
             # TODO: check that there is at least one column of land statistics
             if self.x_column in result and self.y_column in result:
@@ -298,7 +298,7 @@ class LandDataFrame(pd.DataFrame):
                 result.__class__ = pd.DataFrame
         return result
 
-    def merge(
+    def merge(  # noqa: D102
         self,
         right,
         duplicate_columns=False,
@@ -307,7 +307,15 @@ class LandDataFrame(pd.DataFrame):
         right_index=True,
         **kwargs,
     ):
-        return merge(self, right, **kwargs)
+        return merge(
+            self,
+            right,
+            duplicate_columns=duplicate_columns,
+            how=how,
+            left_index=left_index,
+            right_index=right_index,
+            **kwargs,
+        )
 
     merge.__doc__ = _merge_doc % ""
 
@@ -317,17 +325,35 @@ class LandDataFrame(pd.DataFrame):
 
     # geopandas
     def get_geoseries(self):
+        """Get geometry as geopandas geo-series.
+
+        Returns
+        -------
+        geoseries : geopandas.GeoSeries
+        """
         return sls_geometry.get_geoseries(self)
 
     get_geoseries.__doc__ = sls_geometry._get_geoseries_doc % ""
 
     def to_geodataframe(self, drop_xy_columns=True):
+        """Convert to geopandas geo-dataframe.
+
+        Parameters
+        ----------
+        drop_xy_columns : bool, default True
+            whether the LandDataFrame x and y columns should be deleted from the
+            geopandas GeoDataFrame.
+
+        Returns
+        -------
+        geodataframe : geopandas.GeoDataFrame
+        """
         return sls_geometry.to_geodataframe(self, drop_xy_columns=drop_xy_columns)
 
     to_geodataframe.__doc__ = sls_geometry._to_geodataframe_doc % ""
 
 
-def merge(
+def merge(  # noqa: D103
     left,
     right,
     duplicate_columns=False,
@@ -336,7 +362,6 @@ def merge(
     right_index=True,
     **kwargs,
 ):
-
     if duplicate_columns:
         _right = right
     else:

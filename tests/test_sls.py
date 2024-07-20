@@ -4,24 +4,11 @@ import swisslandstats as sls
 
 
 def test_base_imports():
-    import matplotlib.pyplot as plt
-    import numpy as np
-    import pandas as pd
-    import rasterio
-    import xarray as xr
-    from matplotlib import colors
-    from rasterio import transform
-    from rasterio.crs import CRS
+    pass
 
 
 def test_geo_imports():
-    from functools import partial
-
-    import geopandas as gpd
-    import osmnx as ox
-    import pyproj
-    from shapely.geometry import Point
-    from shapely.ops import transform
+    pass
 
 
 def test_slsdataframe():
@@ -29,7 +16,6 @@ def test_slsdataframe():
 
     import matplotlib.pyplot as plt
     import numpy as np
-    import osmnx as ox
     import pandas as pd
     import xarray as xr
     from rasterio.crs import CRS

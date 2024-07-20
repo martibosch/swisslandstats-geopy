@@ -86,7 +86,7 @@ result : LandDataFrame
 """
 
 
-def get_geoseries(ldf):
+def get_geoseries(ldf):  # noqa: D103
     if gpd:
         return gpd.GeoSeries(
             map(Point, ldf[[ldf.x_column, ldf.y_column]].values),
@@ -102,7 +102,7 @@ get_geoseries.__doc__ = (
 )
 
 
-def to_geodataframe(ldf, drop_xy_columns=True):
+def to_geodataframe(ldf, drop_xy_columns=True):  # noqa: D103
     gser = get_geoseries(ldf)
 
     # if geometry is None, geopandas is not installed and the corresponding
@@ -118,7 +118,7 @@ def to_geodataframe(ldf, drop_xy_columns=True):
 to_geodataframe.__doc__ = _to_geodataframe_doc % "\nldf : LandDataFrame"
 
 
-def clip_by_geometry(ldf, geometry, geometry_crs=None):
+def clip_by_geometry(ldf, geometry, geometry_crs=None):  # noqa: D103
     if geometry_crs is None:
         geometry_crs = settings.DEFAULT_CRS
 
@@ -159,7 +159,7 @@ def clip_by_geometry(ldf, geometry, geometry_crs=None):
 clip_by_geometry.__doc__ = _clip_by_geometry_doc % "\nldf : LandDataFrame"
 
 
-def clip_by_nominatim(ldf, query, **geocode_to_gdf_kws):
+def clip_by_nominatim(ldf, query, **geocode_to_gdf_kws):  # noqa: D103
     if ox:
         try:
             geometry = ox.geocode_to_gdf(query, **geocode_to_gdf_kws)["geometry"].iloc[

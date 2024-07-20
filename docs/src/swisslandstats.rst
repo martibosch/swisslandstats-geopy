@@ -11,5 +11,5 @@ Other functions
 ---------------
 
 .. autofunction:: swisslandstats.merge
-      
+
 .. autofunction:: swisslandstats.read_csv
