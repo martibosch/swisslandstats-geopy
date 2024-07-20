@@ -20,32 +20,33 @@ The target audience of `swisslandstats-geopy` is researchers and developers in e
 
 ## Features
 
-* Automatically read CSV files from the GEOSTAT inventory into dataframes
-* Export columns into `numpy` arrays and `GeoTIFF` files
-* Clip dataframes by vector geometries
-* Plot information as raster maps
+- Automatically read CSV files from the GEOSTAT inventory into dataframes
+- Export columns into `numpy` arrays and `GeoTIFF` files
+- Clip dataframes by vector geometries
+- Plot information as raster maps
 
 ```python
 import swisslandstats as sls
 
-ldf = sls.read_csv('data/AREA_NOAS04_72_171129.csv')
-ldf.plot('AS09R_4', cmap=sls.noas04_4_cmap, legend=True)
+ldf = sls.read_csv("data/AREA_NOAS04_72_171129.csv")
+ldf.plot("AS09R_4", cmap=sls.noas04_4_cmap, legend=True)
 ```
+
 ![landstats](examples/landstats.png)
 
 ```python
-vaud_ldf = ldf.clip_by_nominatim('Vaud, Switzerland')
-vaud_ldf.plot('AS09R_4', cmap=sls.noas04_4_cmap, legend=True)
+vaud_ldf = ldf.clip_by_nominatim("Vaud, Switzerland")
+vaud_ldf.plot("AS09R_4", cmap=sls.noas04_4_cmap, legend=True)
 ```
+
 ![landstats-vaud](examples/landstats_vaud.png)
 
 See the [example notebook](https://github.com/martibosch/swisslandstats-geopy/tree/master/examples/overview.ipynb) for a more thorough overview and example uses with the [land use statistics](https://www.bfs.admin.ch/bfs/en/home/services/geostat/swiss-federal-statistics-geodata/land-use-cover-suitability/swiss-land-use-statistics.html) and [population and household statistics](https://www.bfs.admin.ch/bfs/en/home/services/geostat/swiss-federal-statistics-geodata/population-buildings-dwellings-persons/population-housholds-from-2010.html). You might click the Binder badge above to execute it interactively in your browser.
 
 Examples of applications of the library in the academic literature include:
 
-* The assessment of the carbon sequestration for the canton of Vaud (see [the dedicated GitHub repository](https://github.com/martibosch/carbon-sequestration-vaud) with the materials necessary to reproduce the results)
-* The evaluation of the spatio-temporal patterns of LULC change in the urban agglomerations of Zurich, Bern and Lausanne (see [the dedicated GitHub repository](https://github.com/martibosch/swiss-urbanization) with the materials necessary to reproduce the results).
-
+- The assessment of the carbon sequestration for the canton of Vaud (see [the dedicated GitHub repository](https://github.com/martibosch/carbon-sequestration-vaud) with the materials necessary to reproduce the results)
+- The evaluation of the spatio-temporal patterns of LULC change in the urban agglomerations of Zurich, Bern and Lausanne (see [the dedicated GitHub repository](https://github.com/martibosch/swiss-urbanization) with the materials necessary to reproduce the results).
 
 ## Installation
 
@@ -53,7 +54,7 @@ Examples of applications of the library in the academic literature include:
 
 The easiest way to install `swisslandstats-geopy` is with conda as in:
 
-``` bash
+```bash
 conda install -c conda-forge swisslandstats-geopy
 ```
 
@@ -61,7 +62,7 @@ conda install -c conda-forge swisslandstats-geopy
 
 If you want to be able to clip dataframes by vector geometries, you will need [geopandas](https://github.com/geopandas/geopandas) (and [osmnx](https://github.com/gboeing/osmnx) to clip dataframes from place names e.g., "Zurich, Switzerland"). The easiest way to install such requirements is via conda as in:
 
-``` bash
+```bash
 conda install -c conda-forge geopandas osmnx rasterio
 ```
 
@@ -69,7 +70,7 @@ Although [rasterio](https://github.com/mapbox/rasterio) can be installed via pip
 
 Then you can install `swisslandstats-geopy` via pip as in:
 
-``` bash
+```bash
 pip install swisslandstats-geopy
 ```
 
@@ -77,7 +78,7 @@ Additionally, you might consider [installing `pygeos` to drastically improve the
 
 ## TODO
 
-* Add missing colormaps
-  * Automatically assign columns to cmaps when plotting
-* Exceptions for no land use/land cover columns
-* Implement methods to merge DataFrames from multiple csv files
+- Add missing colormaps
+  - Automatically assign columns to cmaps when plotting
+- Exceptions for no land use/land cover columns
+- Implement methods to merge DataFrames from multiple csv files

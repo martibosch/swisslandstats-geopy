@@ -2,71 +2,48 @@ name: tests
 
 on:
   push:
-    branches: [main, develop]
-  pull_request:
     branches: [main]
+  pull_request:
+    branches:
+      - "*"
 
 jobs:
-
-  build:
-
-    name: Python ${{ matrix.python-version }} ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+  test:
     strategy:
-      fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ['3.7', '3.8', '3.9']
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        include:
+          - os: macos-latest
+            python-version: "3.12"
+          - os: windows-latest
+            python-version: "3.12"
 
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash -l {0}
 
     steps:
+      - uses: actions/checkout@v4
 
-      - name: Checkout repo
-        uses: actions/checkout@v2
+      - uses: mamba-org/setup-micromamba@v1
         with:
-          fetch-depth: 2
+          environment-name: test-env
+          create-args: >-
+            python=${{ matrix.python-version }}
+            pip
 
-      - name: Cache conda
-        uses: actions/cache@v2
+      - name: install dependencies
+        run: pip install tox tox-gh-actions
+
+      - name: test with tox
+        run: tox
         env:
-          CACHE_NUMBER: 0
-        with:
-          path: ~/conda_pkgs_dir
-          key: ${{ runner.os }}-python-${{ matrix.python-version }}-${{ env.CACHE_NUMBER }}-${{ hashFiles('environment-dev.yml') }}
+          CONDA_EXE: mamba
 
-      - name: Setup conda environment
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-          use-only-tar-bz2: true  # required for caching
-          show-channel-urls: true
-          channel-priority: strict
-          activate-environment: swisslandstats
-          environment-file: environment-dev.yml
+      - name: upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
 
-      - name: Install swisslandstats
-        run: |
-          pip install .[geo]
-          conda list
-          conda info --all
-
-      - name: Lint code
-        run: |
-          isort swisslandstats --check-only
-          black . --check --diff
-          flake8 .
-
-      - name: Test docs
-        run: make -C ./docs html
-
-      - name: Test code
-        run: |
-          coverage run --source ./swisslandstats --module pytest --verbose
-          coverage xml -i
-          coverage report -m
-
-      - name: Upload coverage report
-        uses: codecov/codecov-action@v1
+      - name: list files
+        run: ls -l .
