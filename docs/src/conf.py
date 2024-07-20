@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """swisslandstats documentation build configuration."""
 #
 # python_boilerplate documentation build configuration file, created by
@@ -91,7 +90,7 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "default"
+html_theme = "pydata_sphinx_theme"
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.  For a list of options available for each theme, see the
@@ -133,8 +132,8 @@ latex_documents = [
     (
         master_doc,
         "swisslandstats.tex",
-        u"swisslandstats-geopy documentation",
-        u"Martí Bosch",
+        "swisslandstats-geopy documentation",
+        "Martí Bosch",
         "manual",
     ),
 ]
@@ -147,7 +146,7 @@ man_pages = [
     (
         master_doc,
         "swisslandstats",
-        u"swisslandstats-geopy documentation",
+        "swisslandstats-geopy documentation",
         [author],
         1,
     )
@@ -162,7 +161,7 @@ texinfo_documents = [
     (
         master_doc,
         "swisslandstats",
-        u"swisslandstats-geopy documentation",
+        "swisslandstats-geopy documentation",
         author,
         "swisslandstats",
         "Pandas-like interface for the Swiss land datasets from the SFSO",

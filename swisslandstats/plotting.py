@@ -51,7 +51,7 @@ ax : matplotlib axis
 """
 
 
-def plot_ndarray(
+def plot_ndarray(  # noqa: D103
     arr, transform=None, cmap=None, legend=False, figsize=None, ax=None, **show_kws
 ):
     if cmap is None:
