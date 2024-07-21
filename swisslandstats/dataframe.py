@@ -392,6 +392,7 @@ def read_csv(
     index_column=None,
     x_column=None,
     y_column=None,
+    sep=None,
     crs=None,
     res=None,
     read_csv_kwargs=None,
@@ -418,6 +419,9 @@ def read_csv(
     y_column : str, optional
         Label of the y-coordinates column. If `None` is provided, the value
         set in `settings.DEFAULT_Y_COLUMN` will be taken.
+    sep: str, optional
+        Delimiter to use. If `None` is provided, the value set in `settings.DEFAULT_SEP`
+        will be taken.
     crs : rasterio CRS, optional
         Coordinate reference system, as a rasterio CRS object. If `None` is
         provided, the value set in `settings.DEFAULT_CRS` will be taken.
@@ -425,7 +429,7 @@ def read_csv(
         The (x, y) resolution of the dataset. If `None` is provided, the value
         set in `settings.DEFAULT_RES` will be taken.
     read_csv_kwargs : dict-like, optional
-        Keyword arguments to be passed to `pandas.read_csv`
+        Keyword arguments to be passed to `pandas.read_csv`, except `sep`.
     df_init_kwargs : dict-like, optional
         Keyword arguments to be passed to `LandDataFrame.__init__`
 
@@ -435,7 +439,12 @@ def read_csv(
     """
     if read_csv_kwargs is None:
         read_csv_kwargs = {}
-    df = pd.read_csv(filepath_or_buffer, **read_csv_kwargs)
+    # remove the `sep` parameter from the kwargs
+    _read_csv_kwargs = read_csv_kwargs.copy()
+    _read_csv_kwargs.pop("sep", None)
+    if sep is None:
+        sep = settings.DEFAULT_SEP
+    df = pd.read_csv(filepath_or_buffer, sep=sep, **read_csv_kwargs)
 
     if df_init_kwargs is None:
         df_init_kwargs = {}
