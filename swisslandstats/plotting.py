@@ -35,13 +35,13 @@ Parameters
 ----------%s
 cmap : str or `~matplotlib.colors.Colormap`, optional
     A Colormap instance
-legend : bool, optional
+legend : bool, default False
     If ``True``, display the legend
 figsize: tuple of two ints, optional
     Size of the figure to create.
 ax : axis object, optional
     Plot in given axis; if None creates a new figure
-**show_kws : optional
+**show_kwargs : dict-like, optional
     Keyword arguments to be passed to `rasterio.plot.show`
 
 Returns
@@ -52,7 +52,14 @@ ax : matplotlib axis
 
 
 def plot_ndarray(  # noqa: D103
-    arr, transform=None, cmap=None, legend=False, figsize=None, ax=None, **show_kws
+    arr,
+    *,
+    transform=None,
+    cmap=None,
+    legend=False,
+    figsize=None,
+    ax=None,
+    **show_kwargs,
 ):
     if cmap is None:
         cmap = plt.get_cmap("terrain")
@@ -61,7 +68,7 @@ def plot_ndarray(  # noqa: D103
         fig, ax = plt.subplots(figsize=figsize)
     ax.set_aspect("equal")
 
-    ax = show(arr, ax=ax, transform=transform, cmap=cmap, **show_kws)
+    ax = show(arr, ax=ax, transform=transform, cmap=cmap, **show_kwargs)
 
     if legend:
         im = ax.get_images()[0]
