@@ -77,7 +77,7 @@ Parameters
 ----------%s
 query : string or dict
     query string or structured query dict to geocode/download
-which_result : int
+which_result : int, default 1
     max number of results to return and which to process upon receipt
 
 Returns
@@ -102,7 +102,7 @@ get_geoseries.__doc__ = (
 )
 
 
-def to_geodataframe(ldf, drop_xy_columns=True):  # noqa: D103
+def to_geodataframe(ldf, *, drop_xy_columns=True):  # noqa: D103
     gser = get_geoseries(ldf)
 
     # if geometry is None, geopandas is not installed and the corresponding
@@ -118,7 +118,7 @@ def to_geodataframe(ldf, drop_xy_columns=True):  # noqa: D103
 to_geodataframe.__doc__ = _to_geodataframe_doc % "\nldf : LandDataFrame"
 
 
-def clip_by_geometry(ldf, geometry, geometry_crs=None):  # noqa: D103
+def clip_by_geometry(ldf, geometry, *, geometry_crs=None):  # noqa: D103
     if geometry_crs is None:
         geometry_crs = settings.DEFAULT_CRS
 
@@ -159,12 +159,12 @@ def clip_by_geometry(ldf, geometry, geometry_crs=None):  # noqa: D103
 clip_by_geometry.__doc__ = _clip_by_geometry_doc % "\nldf : LandDataFrame"
 
 
-def clip_by_nominatim(ldf, query, **geocode_to_gdf_kws):  # noqa: D103
+def clip_by_nominatim(ldf, query, **geocode_to_gdf_kwargs):  # noqa: D103
     if ox:
         try:
-            geometry = ox.geocode_to_gdf(query, **geocode_to_gdf_kws)["geometry"].iloc[
-                0
-            ]
+            geometry = ox.geocode_to_gdf(query, **geocode_to_gdf_kwargs)[
+                "geometry"
+            ].iloc[0]
             return clip_by_geometry(ldf, geometry, geometry_crs=ox.settings.default_crs)
 
         except KeyError:

@@ -22,7 +22,7 @@ as join keys, and will avoid duplicating columns. See also the documentation for
 Parameters
 ----------%s
 right : LandDataFrame
-duplicate_columns : boolean, default True
+duplicate_columns : boolean, default False
 how : {'left', 'right', 'outer', 'inner'}, default 'outer'
     parameter passed to `pandas.merge`
 left_index : boolean, default True
@@ -55,12 +55,13 @@ class LandDataFrame(pd.DataFrame):
     def __init__(
         self,
         data,
+        *,
         index_column=None,
         x_column=None,
         y_column=None,
         crs=None,
         res=None,
-        **df_init_kws,
+        **df_init_kwargs,
     ):
         """
         Initialize the land data frame instance.
@@ -89,9 +90,11 @@ class LandDataFrame(pd.DataFrame):
         res : tuple, optional
             The (x, y) resolution of the dataset. If `None` is provided, the value set
             in `settings.DEFAULT_RES` will be taken.
+        df_init_kwargs : dict-like
+            Keyword arguments to be passed to `pandas.DataFrame.__init__`.
         """
         # init the pandas dataframe
-        super().__init__(data, **df_init_kws)
+        super().__init__(data, **df_init_kwargs)
 
         # set the index
         if index_column is None:
@@ -138,7 +141,7 @@ class LandDataFrame(pd.DataFrame):
         arr[-i, j] = self[column].values
         return arr.astype(dtype)
 
-    def to_ndarray(self, column, nodata=0, dtype="uint8"):
+    def to_ndarray(self, column, *, nodata=0, dtype="uint8"):
         """
         Convert a data column to a numpy array.
 
@@ -146,9 +149,9 @@ class LandDataFrame(pd.DataFrame):
         ----------
         column : str
             name of the data column.
-        nodata : numeric
+        nodata : numeric, default 0
             value to be assigned to pixels with no data.
-        dtype : str or numpy dtype
+        dtype : str or numpy dtype, default uint8
             the data type.
 
         Returns
@@ -165,7 +168,7 @@ class LandDataFrame(pd.DataFrame):
 
         return self._to_ndarray(column, i, j, nodata, dtype)
 
-    def to_xarray(self, columns, dim_name="time", nodata=0, dtype="uint8"):
+    def to_xarray(self, columns, *, dim_name="time", nodata=0, dtype="uint8"):
         """
         Convert a data column to a xarray data array.
 
@@ -173,11 +176,11 @@ class LandDataFrame(pd.DataFrame):
         ----------
         columns : str or list of str
             name or names of the data columns.
-        dim_name : str
+        dim_name : str, default time
             name of the outermost dimension set by the `columns` argument.
-        nodata : numeric
+        nodata : numeric, default 0
             value to be assigned to pixels with no data.
-        dtype : str or numpy dtype
+        dtype : str or numpy dtype, default uint8
             the data type.
 
         Returns
@@ -217,7 +220,7 @@ class LandDataFrame(pd.DataFrame):
             attrs=dict(nodata=nodata, pyproj_srs=f"epsg:{self.crs.to_epsg()}"),
         )
 
-    def to_geotiff(self, fp, column, nodata=0, dtype="uint8"):
+    def to_geotiff(self, fp, column, *, nodata=0, dtype="uint8"):
         """
         Export a data column to a GeoTIFF file.
 
@@ -228,12 +231,12 @@ class LandDataFrame(pd.DataFrame):
             object.
         column : str
             name of the data column.
-        nodata : numeric
+        nodata : numeric, default 0
             value to be assigned to pixels with no data.
-        dtype : str or numpy dtype
+        dtype : str or numpy dtype, default
             the data type.
         """
-        arr = self.to_ndarray(column, nodata, dtype)
+        arr = self.to_ndarray(column, nodata=nodata, dtype=dtype)
 
         with rio.open(
             fp,
@@ -252,11 +255,12 @@ class LandDataFrame(pd.DataFrame):
     def plot(  # noqa: D102
         self,
         column,
+        *,
         cmap=None,
         legend=False,
         figsize=None,
         ax=None,
-        **show_kws,
+        **show_kwargs,
     ):
         # TODO: automatically assign cmaps according to columns
         arr = self.to_ndarray(column)
@@ -267,7 +271,7 @@ class LandDataFrame(pd.DataFrame):
             legend=legend,
             figsize=figsize,
             ax=ax,
-            **show_kws,
+            **show_kwargs,
         )
 
     plot.__doc__ = plotting._plot_ndarray_doc % (
@@ -275,12 +279,12 @@ class LandDataFrame(pd.DataFrame):
         "\ncolumn : str\n    data column to display",
     )
 
-    def clip_by_geometry(self, geometry, geometry_crs=None):  # noqa: D102
+    def clip_by_geometry(self, geometry, *, geometry_crs=None):  # noqa: D102
         return sls_geometry.clip_by_geometry(self, geometry, geometry_crs=geometry_crs)
 
     clip_by_geometry.__doc__ = sls_geometry._clip_by_geometry_doc % ""
 
-    def clip_by_nominatim(self, query, which_result=1):  # noqa: D102
+    def clip_by_nominatim(self, query, *, which_result=1):  # noqa: D102
         return sls_geometry.clip_by_nominatim(self, query, which_result=which_result)
 
     clip_by_nominatim.__doc__ = sls_geometry._clip_by_nominatim_doc % ""
@@ -301,6 +305,7 @@ class LandDataFrame(pd.DataFrame):
     def merge(  # noqa: D102
         self,
         right,
+        *,
         duplicate_columns=False,
         how="outer",
         left_index=True,
@@ -335,7 +340,7 @@ class LandDataFrame(pd.DataFrame):
 
     get_geoseries.__doc__ = sls_geometry._get_geoseries_doc % ""
 
-    def to_geodataframe(self, drop_xy_columns=True):
+    def to_geodataframe(self, *, drop_xy_columns=True):
         """Convert to geopandas geo-dataframe.
 
         Parameters
@@ -356,6 +361,7 @@ class LandDataFrame(pd.DataFrame):
 def merge(  # noqa: D103
     left,
     right,
+    *,
     duplicate_columns=False,
     how="outer",
     left_index=True,
@@ -382,13 +388,14 @@ merge.__doc__ = _merge_doc % "\nleft : LandDataFrame"
 
 def read_csv(
     filepath_or_buffer,
+    *,
     index_column=None,
     x_column=None,
     y_column=None,
     crs=None,
     res=None,
-    read_csv_kws=None,
-    df_init_kws=None,
+    read_csv_kwargs=None,
+    df_init_kwargs=None,
 ):
     """
     Read a CSV file into a LandDataFrame.
@@ -417,21 +424,21 @@ def read_csv(
     res : tuple, optional
         The (x, y) resolution of the dataset. If `None` is provided, the value
         set in `settings.DEFAULT_RES` will be taken.
-    read_csv_kws : dict-like, optional
+    read_csv_kwargs : dict-like, optional
         Keyword arguments to be passed to `pandas.read_csv`
-    df_init_kws : dict-like, optional
-        Keyword arguments to be passed to `pandas.read_csv`
+    df_init_kwargs : dict-like, optional
+        Keyword arguments to be passed to `LandDataFrame.__init__`
 
     Returns
     -------
     result : LandDataFrame
     """
-    if read_csv_kws is None:
-        read_csv_kws = {}
-    df = pd.read_csv(filepath_or_buffer, **read_csv_kws)
+    if read_csv_kwargs is None:
+        read_csv_kwargs = {}
+    df = pd.read_csv(filepath_or_buffer, **read_csv_kwargs)
 
-    if df_init_kws is None:
-        df_init_kws = {}
+    if df_init_kwargs is None:
+        df_init_kwargs = {}
     return LandDataFrame(
         df,
         crs=crs,
@@ -439,5 +446,5 @@ def read_csv(
         index_column=index_column,
         x_column=x_column,
         y_column=y_column,
-        **df_init_kws,
+        **df_init_kwargs,
     )
