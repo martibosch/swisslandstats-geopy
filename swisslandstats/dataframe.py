@@ -1,5 +1,7 @@
 """Land data frame."""
 
+import tempfile
+
 import numpy as np
 import pandas as pd
 import rasterio as rio
@@ -8,9 +10,9 @@ from rasterio import transform
 from rasterio.crs import CRS
 
 from . import geometry as sls_geometry
-from . import plotting, settings
+from . import plotting, settings, utils
 
-__all__ = ["LandDataFrame", "merge", "read_csv"]
+__all__ = ["LandDataFrame", "merge", "read_csv", "from_url"]
 
 _merge_doc = """
 Merges LandDataFrame objects.
@@ -457,3 +459,33 @@ def read_csv(
         y_column=y_column,
         **df_init_kwargs,
     )
+
+
+def from_url(*, url=None, **read_csv_kwargs):
+    """
+    Read a CSV file from a URL into a LandDataFrame.
+
+    Parameters
+    ----------
+    url : str, optional
+        The URL of the file. If `None` is provided, the value set in `settings.SLS_URL`
+        will be taken.
+    **read_csv_kwargs : dict-like
+        Keyword arguments to be passed to `pandas.read_csv`.
+
+    Returns
+    -------
+    ldf : LandDataFrame
+    """
+    if url is None:
+        url = settings.LATEST_SLS_URL
+    if read_csv_kwargs is None:
+        read_csv_kwargs = {}
+    if settings.USE_CACHE:
+        filepath = utils._get_from_cache_or_download(url)
+        return read_csv(filepath, **read_csv_kwargs)
+    else:
+        # TODO: move this to utils?
+        with tempfile.TemporaryFile() as tmpfile:
+            utils._download_url(url, tmpfile)
+            return read_csv(tmpfile, **read_csv_kwargs)
