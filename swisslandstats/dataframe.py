@@ -1,16 +1,20 @@
 """Land data frame."""
 
+import io
+
 import numpy as np
 import pandas as pd
 import rasterio as rio
+import requests
+import requests_cache
 import xarray as xr
 from rasterio import transform
 from rasterio.crs import CRS
 
 from . import geometry as sls_geometry
-from . import plotting, settings
+from . import plotting, settings, utils
 
-__all__ = ["LandDataFrame", "merge", "read_csv"]
+__all__ = ["LandDataFrame", "merge", "read_csv", "from_url"]
 
 _merge_doc = """
 Merges LandDataFrame objects.
@@ -456,4 +460,39 @@ def read_csv(
         x_column=x_column,
         y_column=y_column,
         **df_init_kwargs,
+    )
+
+
+def from_url(*, url=None, **read_csv_kwargs):
+    """
+    Read a CSV file from a URL into a LandDataFrame.
+
+    Parameters
+    ----------
+    url : str, optional
+        The URL of the file. If `None` is provided, the value set in `settings.SLS_URL`
+        will be taken.
+    **read_csv_kwargs : dict-like
+        Keyword arguments to be passed to `pandas.read_csv`.
+
+    Returns
+    -------
+    ldf : LandDataFrame
+    """
+    if url is None:
+        url = settings.LATEST_SLS_URL
+    if read_csv_kwargs is None:
+        read_csv_kwargs = {}
+    if settings.USE_CACHE:
+        session = requests_cache.CachedSession(
+            cache_name=settings.CACHE_NAME,
+            backend=settings.CACHE_BACKEND,
+            expire_after=settings.CACHE_EXPIRE,
+        )
+    else:
+        session = requests.Session()
+
+    response = session.get(url)
+    return read_csv(
+        io.StringIO(response.content.decode(response.encoding)), **read_csv_kwargs
     )
