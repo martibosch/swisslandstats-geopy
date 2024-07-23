@@ -1,7 +1,8 @@
 [![PyPI version fury.io](https://badge.fury.io/py/swisslandstats-geopy.svg)](https://pypi.python.org/pypi/swisslandstats-geopy/)
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/swisslandstats-geopy.svg)](https://anaconda.org/conda-forge/swisslandstats-geopy)
 [![Documentation Status](https://readthedocs.org/projects/swisslandstats-geopy/badge/?version=latest)](https://swisslandstats-geopy.readthedocs.io/en/latest/?badge=latest)
-[![Build Status](https://github.com/martibosch/swisslandstats-geopy/workflows/tests/badge.svg?branch=main)](https://github.com/martibosch/swisslandstats-geopy/actions?query=workflow%3A%22tests%22)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/martibosch/swisslandstats-geopy/main.svg)](https://results.pre-commit.ci/latest/github/martibosch/swisslandstats-geopy/main)
+[![tests](https://github.com/martibosch/swisslandstats-geopy/actions/workflows/tests.yml/badge.svg)](https://github.com/martibosch/swisslandstats-geopy/blob/main/.github/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/martibosch/swisslandstats-geopy/branch/main/graph/badge.svg)](https://codecov.io/gh/martibosch/swisslandstats-geopy)
 [![GitHub license](https://img.shields.io/github/license/martibosch/swisslandstats-geopy.svg)](https://github.com/martibosch/swisslandstats-geopy/blob/master/LICENSE.txt)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/martibosch/swisslandstats-geopy/master?filepath=examples/overview.ipynb)
@@ -28,15 +29,15 @@ The target audience of `swisslandstats-geopy` is researchers and developers in e
 ```python
 import swisslandstats as sls
 
-ldf = sls.read_csv("data/AREA_NOAS04_72_171129.csv")
-ldf.plot("AS09R_4", cmap=sls.noas04_4_cmap, legend=True)
+ldf = sls.from_url()
+ldf.plot("LU09_4", cmap=sls.noas04_4_cmap, legend=True)
 ```
 
 ![landstats](examples/landstats.png)
 
 ```python
 vaud_ldf = ldf.clip_by_nominatim("Vaud, Switzerland")
-vaud_ldf.plot("AS09R_4", cmap=sls.noas04_4_cmap, legend=True)
+vaud_ldf.plot("LU09_4", cmap=sls.noas04_4_cmap, legend=True)
 ```
 
 ![landstats-vaud](examples/landstats_vaud.png)
@@ -73,8 +74,6 @@ Then you can install `swisslandstats-geopy` via pip as in:
 ```bash
 pip install swisslandstats-geopy
 ```
-
-Additionally, you might consider [installing `pygeos` to drastically improve the performance](https://geopandas.readthedocs.io/en/latest/install.html#using-the-optional-pygeos-dependency) of the `clip_by_geometry` method (and by extension the `clip_by_nominatim` method too). For example, in my laptop, clipping the whole Swiss land use/land cover database to the extent of the Canton of Vaud takes 3.78s when using `pygeos` instead of 197s (speed-up of x50).
 
 ## TODO
 
