@@ -148,9 +148,9 @@ class LandDataFrame(pd.DataFrame):
         return transform.from_origin(x_origin, y_origin, xres, yres)
 
     def _to_ndarray(self, column, i, j, nodata, dtype):
-        arr = np.full((i.max() + 1, j.max() + 1), nodata)
-        arr[-i, j] = self[column].values
-        return arr.astype(dtype)
+        arr = np.full((i.max() + 1, j.max() + 1), nodata, dtype=dtype)
+        arr[-i, j] = np.where(self[column].isna(), nodata, self[column])
+        return arr
 
     def to_ndarray(self, column, *, nodata=0, dtype="uint8"):
         """
