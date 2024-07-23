@@ -104,7 +104,14 @@ class LandDataFrame(pd.DataFrame):
         if index_column is None:
             index_column = settings.DEFAULT_INDEX_COLUMN
         if self.index.name != index_column:
-            self.set_index(index_column, inplace=True)
+            try:
+                self.index = self[index_column]
+                self.drop(columns=index_column, inplace=True)
+            except KeyError:
+                utils.log(
+                    "Ignoring attempt to set non-existent "
+                    f"{index_column} column as index",
+                )
 
         # set the rest of attributes
         if x_column is None:
