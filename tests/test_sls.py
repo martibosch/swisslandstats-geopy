@@ -1,16 +1,14 @@
 """swisslandstats tests."""
 
+import responses
+
 import swisslandstats as sls
+from swisslandstats import settings, utils
+
+TEST_DATASET_FILEPATH = "tests/input_data/dataset.csv"
 
 
-def test_base_imports():
-    pass
-
-
-def test_geo_imports():
-    pass
-
-
+@responses.activate
 def test_slsdataframe():
     import tempfile
 
@@ -22,60 +20,75 @@ def test_slsdataframe():
 
     plt.switch_backend("agg")  # only for testing purposes
 
+    # configure request mocking
+    with open(TEST_DATASET_FILEPATH, "rb") as src:
+        responses.add(
+            responses.GET,
+            settings.LATEST_SLS_URL,
+            body=src.read(),
+            status=200,
+            stream=True,
+        )
+
+    # disable cache since we are mocking requests
+    settings.USE_CACHE = False
+
     # test instantiation
-    for crs in [None, "epsg:2056", CRS.from_string("epsg:2056")]:
-        assert isinstance(sls.read_csv("tests/input_data/dataset.csv").crs, CRS)
+    ldf = sls.read_csv(TEST_DATASET_FILEPATH)
+    # since we are mocking the request, the ldf should be the same
+    assert ldf.compare(sls.from_url()).empty
+    # test crs
+    assert isinstance(sls.read_csv(TEST_DATASET_FILEPATH).crs, CRS)
 
     # test basic features and pandas-like transformations
-    ldf = sls.read_csv("tests/input_data/dataset.csv")
     assert np.all(
-        ldf.to_ndarray("AS09_4") == np.arange(4, dtype=np.uint8).reshape(2, 2)
+        ldf.to_ndarray("LU09_4") == np.arange(4, dtype=np.uint8).reshape(2, 2)
     )
-    ldf.to_geotiff(tempfile.TemporaryFile(), "AS09_4")
+    ldf.to_geotiff(tempfile.TemporaryFile(), "LU09_4")
 
     # test plots
-    assert isinstance(ldf.plot("AS09_4", cmap=sls.noas04_4_cmap, legend=True), plt.Axes)
+    assert isinstance(ldf.plot("LU09_4", cmap=sls.noas04_4_cmap, legend=True), plt.Axes)
     # test noas04_4_cmap. TODO: DRY this test??
-    arr = ldf.to_ndarray("AS18_4")
+    arr = ldf.to_ndarray("LU18_4")
     # if we do not use the `norm` arg and there is no "nodata" value in our land data
     # frame, the "nodata" color will actually be assigned to an actual valid color
-    ax_no_norm = ldf.plot("AS18_4", cmap=sls.noas04_4_cmap)
+    ax_no_norm = ldf.plot("LU18_4", cmap=sls.noas04_4_cmap)
     im_no_norm = ax_no_norm.get_images()[0]
     assert np.all(
         im_no_norm.cmap(im_no_norm.norm(np.unique(arr)))[0]
         == sls.plotting._nodata_color
     )
     # instead, when we use the `norm` arg, the colors are properly assigned
-    ax_norm = ldf.plot("AS18_4", cmap=sls.noas04_4_cmap, norm=sls.noas04_4_norm)
+    ax_norm = ldf.plot("LU18_4", cmap=sls.noas04_4_cmap, norm=sls.noas04_4_norm)
     im_norm = ax_norm.get_images()[0]
     assert np.all(
         im_norm.cmap(im_norm.norm(np.unique(arr)))[0] != sls.plotting._nodata_color
     )
 
     # test data frame types
-    assert type(ldf[[ldf.x_column, ldf.y_column, "AS09_4"]]) == sls.LandDataFrame
-    assert type(ldf[[ldf.x_column, "AS09_4"]]) == pd.DataFrame
-    assert type(ldf["AS09_4"]) == pd.Series
+    assert type(ldf[[ldf.x_column, ldf.y_column, "LU09_4"]]) == sls.LandDataFrame
+    assert type(ldf[[ldf.x_column, "LU09_4"]]) == pd.DataFrame
+    assert type(ldf["LU09_4"]) == pd.Series
 
     # create dataframe with another dummy land statistics column, but with one
     # row less and test merge (should fill the missing row with a nan)
     ldf2 = ldf.copy()
-    ldf2["AS85_4"] = pd.Series(1, index=ldf.index[:-1], name="AS85_4")
-    ldf2 = ldf2.drop("AS09_4", axis=1)
+    ldf2["LU85_4"] = pd.Series(1, index=ldf.index[:-1], name="LU85_4")
+    ldf2 = ldf2.drop("LU09_4", axis=1)
     merged_ldf = ldf.merge(ldf2)
 
-    assert "AS85_4" in merged_ldf.columns.difference(ldf.columns)
-    # to test for the presence of nan: merged_ldf['AS85_4'].isna().any()
-    assert np.sum(merged_ldf["AS85_4"].isna()) == 1
+    assert "LU85_4" in merged_ldf.columns.difference(ldf.columns)
+    # to test for the presence of nan: merged_ldf['LU85_4'].isna().any()
+    assert np.sum(merged_ldf["LU85_4"].isna()) == 1
 
     # test that `get_transform` returns a different transform if, e.g., we
     # change the min x or max y value
     assert ldf.get_transform() != ldf.iloc[:2].get_transform()
 
     # test export to xarray
-    ldf = sls.read_csv("tests/input_data/dataset.csv")
-    ldf["AS85_4"] = pd.Series(1, index=ldf.index[:-1], name="AS85_4")
-    columns = ["AS85_4", "AS09_4"]
+    ldf = sls.read_csv(TEST_DATASET_FILEPATH)
+    ldf["LU85_4"] = pd.Series(1, index=ldf.index[:-1], name="LU85_4")
+    columns = ["LU85_4", "LU09_4"]
     assert isinstance(ldf.to_xarray(columns), xr.DataArray)
     # test that columns are the outermost dimension
     assert ldf.to_xarray(columns).shape[0] == len(columns)
@@ -100,7 +113,7 @@ def test_geometry():
     import geopandas as gpd
     from shapely.geometry import Polygon
 
-    ldf = sls.read_csv("tests/input_data/dataset.csv")
+    ldf = sls.read_csv(TEST_DATASET_FILEPATH)
 
     # geopandas exports
     gser = ldf.get_geoseries()
@@ -122,3 +135,17 @@ def test_geometry():
 
     clipped_ldf = ldf.clip_by_nominatim("Lausanne, Switzerland")
     assert len(clipped_ldf) == 0
+
+
+def test_logging():
+    import logging as lg
+
+    utils.log("test a fake default message")
+    utils.log("test a fake debug", level=lg.DEBUG)
+    utils.log("test a fake info", level=lg.INFO)
+    utils.log("test a fake warning", level=lg.WARNING)
+    utils.log("test a fake error", level=lg.ERROR)
+
+    utils.ts(style="iso8601")
+    utils.ts(style="date")
+    utils.ts(style="time")
