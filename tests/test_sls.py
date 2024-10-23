@@ -66,9 +66,9 @@ def test_slsdataframe():
     )
 
     # test data frame types
-    assert type(ldf[[ldf.x_column, ldf.y_column, "LU09_4"]]) == sls.LandDataFrame
-    assert type(ldf[[ldf.x_column, "LU09_4"]]) == pd.DataFrame
-    assert type(ldf["LU09_4"]) == pd.Series
+    assert isinstance(ldf[[ldf.x_column, ldf.y_column, "LU09_4"]], sls.LandDataFrame)
+    assert isinstance(ldf[[ldf.x_column, "LU09_4"]], pd.DataFrame)
+    assert isinstance(ldf["LU09_4"], pd.Series)
 
     # create dataframe with another dummy land statistics column, but with one
     # row less and test merge (should fill the missing row with a nan)
