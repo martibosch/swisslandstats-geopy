@@ -37,7 +37,7 @@ Repository = "https://github.com/martibosch/swisslandstats-geopy"
 [project.optional-dependencies]
 geo = ["geopandas >= 0.10.0", "osmnx >= 1.0.0"]
 test = ["coverage[toml]", "pytest", "pytest-cov", "responses", "ruff"]
-dev = ["build", "commitizen", "pre-commit", "pip", "toml", "tox", "twine"]
+dev = ["build", "commitizen", "pre-commit", "pip", "toml", "tox", "tox-uv", "twine"]
 doc = ["m2r2", "pydata-sphinx-theme", "sphinx"]
 
 [tool.codespell]
