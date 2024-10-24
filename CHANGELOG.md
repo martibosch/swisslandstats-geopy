@@ -1,5 +1,42 @@
 # Change log
 
+## \[v0.11.0\] - 2024-10-24
+
+### :boom: BREAKING CHANGES
+
+- due to [`8b44edc`](https://github.com/martibosch/swisslandstats-geopy/commit/8b44edc3980b2a7274ed16deca866bb8ffeebe63) - using kws->kwargs, use keyword-only arguments *(commit by [@martibosch](https://github.com/martibosch))*:
+
+  using kws->kwargs, use keyword-only arguments
+
+- due to [`3173730`](https://github.com/martibosch/swisslandstats-geopy/commit/31737303f82341eea5b99d02329a60f201d7be5a) - change default x/y columns in settings *(commit by [@martibosch](https://github.com/martibosch))*:
+
+  change default x/y columns in settings
+
+- due to [`b450a62`](https://github.com/martibosch/swisslandstats-geopy/commit/b450a627df7764822820406e74e582344adffdee) - dedicated sep kwarg for read_csv with default in settings *(commit by [@martibosch](https://github.com/martibosch))*:
+
+  dedicated sep kwarg for read_csv with default in settings
+
+- due to [`9147fcf`](https://github.com/martibosch/swisslandstats-geopy/commit/9147fcfd899e822a570b8363bb556fcd329215a9) - only set index column if exists, otherwise log info msg *(commit by [@martibosch](https://github.com/martibosch))*:
+
+  only set index column if exists, otherwise log info msg
+
+### :sparkles: New Features
+
+- [`3173730`](https://github.com/martibosch/swisslandstats-geopy/commit/31737303f82341eea5b99d02329a60f201d7be5a) - change default x/y columns in settings *(commit by [@martibosch](https://github.com/martibosch))*
+- [`b450a62`](https://github.com/martibosch/swisslandstats-geopy/commit/b450a627df7764822820406e74e582344adffdee) - dedicated sep kwarg for read_csv with default in settings *(commit by [@martibosch](https://github.com/martibosch))*
+- [`96f621e`](https://github.com/martibosch/swisslandstats-geopy/commit/96f621ecdca45ad624a9a2f51ba370c557e596ef) - use requests_cache *(commit by [@martibosch](https://github.com/martibosch))*
+- [`9147fcf`](https://github.com/martibosch/swisslandstats-geopy/commit/9147fcfd899e822a570b8363bb556fcd329215a9) - only set index column if exists, otherwise log info msg *(commit by [@martibosch](https://github.com/martibosch))*
+- [`af7f8b3`](https://github.com/martibosch/swisslandstats-geopy/commit/af7f8b308cab593c9351e0a7061afdfe36ece2f1) - replace nan with nodata before `to_ndarray` *(commit by [@martibosch](https://github.com/martibosch))*
+
+### :recycle: Refactors
+
+- [`8b44edc`](https://github.com/martibosch/swisslandstats-geopy/commit/8b44edc3980b2a7274ed16deca866bb8ffeebe63) - using kws->kwargs, use keyword-only arguments *(commit by [@martibosch](https://github.com/martibosch))*
+
+### :white_check_mark: Tests
+
+- [`acdd0d6`](https://github.com/martibosch/swisslandstats-geopy/commit/acdd0d6133446cc04ca0a25758d93912f418ee14) - update test data; mock requests with getsentry/responses *(commit by [@martibosch](https://github.com/martibosch))*
+- [`87f08f3`](https://github.com/martibosch/swisslandstats-geopy/commit/87f08f32efdcc5eb522f0fff3d5ff8e1d1dadacf) - use isinstance instead of type() + == *(commit by [@martibosch](https://github.com/martibosch))*
+
 ## 0.10.0 (17/11/2021)
 
 - dropped support for Python 3.6
@@ -80,3 +117,4 @@
 ## 0.1 (25/10/2018)
 
 - initial release
+  \[v0.11.0\]: https://github.com/martibosch/swisslandstats-geopy/compare/v0.10.0...v0.11.0
