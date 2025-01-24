@@ -29,7 +29,7 @@ The target audience of `swisslandstats-geopy` is researchers and developers in e
 ```python
 import swisslandstats as sls
 
-ldf = sls.from_url()
+ldf = sls.load_dataset(dataset_key="sls")
 ldf.plot("LU09_4", cmap=sls.noas04_4_cmap, legend=True)
 ```
 

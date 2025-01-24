@@ -1,12 +1,9 @@
 """Land data frame."""
 
-import io
-
 import numpy as np
 import pandas as pd
+import pooch
 import rasterio as rio
-import requests
-import requests_cache
 import xarray as xr
 from rasterio import transform
 from rasterio.crs import CRS
@@ -14,7 +11,7 @@ from rasterio.crs import CRS
 from . import geometry as sls_geometry
 from . import plotting, settings, utils
 
-__all__ = ["LandDataFrame", "merge", "read_csv", "from_url"]
+__all__ = ["LandDataFrame", "merge", "read_csv", "load_dataset"]
 
 _merge_doc = """
 Merges LandDataFrame objects.
@@ -470,15 +467,37 @@ def read_csv(
     )
 
 
-def from_url(*, url=None, **read_csv_kwargs):
+def load_dataset(
+    dataset_key=None,
+    *,
+    year=None,
+    url=None,
+    retrieve_kwargs=None,
+    which_member=None,
+    **read_csv_kwargs,
+):
     """
-    Read a CSV file from a URL into a LandDataFrame.
+    Load a GEOSTAT dataset from a URL into a LandDataFrame.
 
     Parameters
     ----------
+    dataset_key : {"sls", "statpop", "bds", "statent"}, optional
+        The key of the dataset, required unless an URL is provided. The options are:
+        - "sls": land use statistics according to nomenclature 2004
+        - "statpop": population statistics
+        - "bds": building and dwellings statistics
+        - "statent": structural business statistics
+    year : int or str, optional
+        The year of the dataset. If `None` is provided, the latest available year will
+        be taken.
     url : str, optional
-        The URL of the file. If `None` is provided, the value set in `settings.SLS_URL`
-        will be taken.
+        The URL of the file. Ignored if `dataset_key` is provided.
+    retrieve_kwargs : dict-like
+        Keyword arguments passed to `pooch.retrieve`. Ignored if `dataset_key` is
+        provided.
+    which_member : int, optional
+        When downloading a custom url with an unpacking processor, the index of the
+        member to be extracted. Ignored if `dataset_key` is provided.
     **read_csv_kwargs : dict-like
         Keyword arguments to be passed to `pandas.read_csv`.
 
@@ -486,20 +505,45 @@ def from_url(*, url=None, **read_csv_kwargs):
     -------
     ldf : LandDataFrame
     """
-    if url is None:
-        url = settings.LATEST_SLS_URL
     if read_csv_kwargs is None:
-        read_csv_kwargs = {}
-    if settings.USE_CACHE:
-        session = requests_cache.CachedSession(
-            cache_name=settings.CACHE_NAME,
-            backend=settings.CACHE_BACKEND,
-            expire_after=settings.CACHE_EXPIRE,
-        )
+        _read_csv_kwargs = {}
     else:
-        session = requests.Session()
+        _read_csv_kwargs = read_csv_kwargs.copy()
 
-    response = session.get(url)
-    return read_csv(
-        io.StringIO(response.content.decode(response.encoding)), **read_csv_kwargs
-    )
+    if dataset_key is not None:
+        dataset_items = settings.DATASET_DICT[dataset_key]
+        if year is None:
+            year = dataset_items["latest"]
+        elif isinstance(year, int):
+            year = str(year)
+
+        dataset_item = dataset_items[year]
+        retrieve_args = [dataset_item["url"]]
+        _retrieve_kwargs = {"known_hash": dataset_item["known_hash"]}
+        if dataset_item["zip"]:
+            # TODO: better approach than positional "which_member", e.g., a function?
+            filepath_or_buffer = pooch.retrieve(
+                *retrieve_args,
+                processor=pooch.Unzip(members=[dataset_item["members"]]),
+                **_retrieve_kwargs,
+            )[dataset_item["which_member"]]
+        else:
+            filepath_or_buffer = pooch.retrieve(
+                *retrieve_args,
+                **_retrieve_kwargs,
+            )
+
+        _read_csv_kwargs.update(dataset_item["read_csv_kwargs"])
+    else:
+        if retrieve_kwargs is None:
+            retrieve_kwargs = {"known_hash": None}
+
+        if url is None:
+            raise ValueError("Either `dataset_key` or `url` must be provided.")
+        # response = requests.get(url)
+        # filepath_or_buffer = io.StringIO(response.content.decode(response.encoding))
+        filepath_or_buffer = pooch.retrieve(url, **retrieve_kwargs)
+        if which_member is not None:
+            filepath_or_buffer = filepath_or_buffer[which_member]
+
+    return read_csv(filepath_or_buffer, **_read_csv_kwargs)
