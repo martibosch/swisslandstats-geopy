@@ -6,7 +6,6 @@ from . import settings
 
 try:
     import geopandas as gpd
-    from shapely.geometry import Point
 except ImportError:
     gpd = None
 
@@ -89,7 +88,7 @@ result : LandDataFrame
 def get_geoseries(ldf):  # noqa: D103
     if gpd:
         return gpd.GeoSeries(
-            map(Point, ldf[[ldf.x_column, ldf.y_column]].values),
+            gpd.points_from_xy(ldf[ldf.x_column], ldf[ldf.y_column]),
             index=ldf.index,
             crs=ldf.crs,
         )
