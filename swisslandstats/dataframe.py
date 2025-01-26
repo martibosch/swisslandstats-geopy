@@ -455,11 +455,12 @@ def read_csv(
     if res is None:
         res = settings.DEFAULT_RES
 
-    # remove the `sep` parameter from the kwargs
-    _read_csv_kwargs.pop("sep", None)
+    # process sep arg
     if sep is None:
-        sep = settings.DEFAULT_SEP
-    df = pd.read_csv(filepath_or_buffer, sep=sep, **_read_csv_kwargs)
+        sep = _read_csv_kwargs.get("sep", settings.DEFAULT_SEP)
+    _read_csv_kwargs["sep"] = sep
+
+    df = pd.read_csv(filepath_or_buffer, **_read_csv_kwargs)
 
     if df_init_kwargs is None:
         df_init_kwargs = {}
