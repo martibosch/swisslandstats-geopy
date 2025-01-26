@@ -139,9 +139,9 @@ class TestSwissLandStats(unittest.TestCase):
                     status=200,
                     stream=True,
                 )
-            self.dataset_dict[dataset_key][_latest_sls_key][
-                "known_hash"
-            ] = MOCK_KNOWN_HASH_DICT[dataset_key]
+            self.dataset_dict[dataset_key][_latest_sls_key]["known_hash"] = (
+                MOCK_KNOWN_HASH_DICT[dataset_key]
+            )
 
         # test all the other datasets
         for dataset_key in other_datasets:

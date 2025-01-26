@@ -1,6 +1,6 @@
 # Change log
 
-## \[v0.11.0\] - 2024-10-24
+## [v0.11.0] - 2024-10-24
 
 ### :boom: BREAKING CHANGES
 
