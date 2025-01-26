@@ -74,23 +74,16 @@ class LandDataFrame(pd.DataFrame):
         ----------
         data : ndarray (structured or homogeneous), Iterable, dict or DataFrame
             Data that will be passed to the initialization method of `pd.DataFrame`.
-        index_column : str, optional
-            Label of the index column. If `None` is provided, the value set in
-            `settings.DEFAULT_INDEX_COLUMN` will be taken.
-        x_column : str, optional
-            Label of the x-coordinates column. If `None` is provided, the value set in
-            `settings.DEFAULT_X_COLUMN` will be taken.
-        y_column : str, optional
-            Label of the y-coordinates column. If `None` is provided, the value set in
-            `settings.DEFAULT_Y_COLUMN` will be taken.
-        crs : str or rasterio CRS, optional
+        index_column : str
+            Label of the index column.
+        x_column, y_column : str
+            Labels of the x and y coordinates column respectively.
+        crs : str or rasterio CRS
             Coordinate reference system, as string or as rasterio CRS object. If a
             string is provided, it will be passed to `rasterio.crs.CRS.from_string` to
-            instantiatie a rasterio CRS object. If `None` is provided, the value set in
-            `settings.DEFAULT_CRS` will be taken.
-        res : tuple, optional
-            The (x, y) resolution of the dataset. If `None` is provided, the value set
-            in `settings.DEFAULT_RES` will be taken.
+            instantiatie a rasterio CRS object.
+        res : tuple
+            The (x, y) resolution of the dataset.
         df_init_kwargs : dict-like
             Keyword arguments to be passed to `pandas.DataFrame.__init__`.
         """
@@ -98,8 +91,6 @@ class LandDataFrame(pd.DataFrame):
         super().__init__(data, **df_init_kwargs)
 
         # set the index
-        if index_column is None:
-            index_column = settings.DEFAULT_INDEX_COLUMN
         if self.index.name != index_column:
             try:
                 self.index = self[index_column]
@@ -111,17 +102,6 @@ class LandDataFrame(pd.DataFrame):
                 )
 
         # set the rest of attributes
-        if x_column is None:
-            x_column = settings.DEFAULT_X_COLUMN
-        if y_column is None:
-            y_column = settings.DEFAULT_Y_COLUMN
-        if crs is None:
-            crs = CRS.from_string(settings.DEFAULT_CRS)
-        elif isinstance(crs, str):
-            crs = CRS.from_string(crs)
-        if res is None:
-            res = settings.DEFAULT_RES
-
         self.x_column = x_column
         self.y_column = y_column
         self.crs = crs
@@ -400,6 +380,7 @@ def read_csv(
     index_column=None,
     x_column=None,
     y_column=None,
+    columns=None,
     sep=None,
     crs=None,
     res=None,
@@ -427,6 +408,9 @@ def read_csv(
     y_column : str, optional
         Label of the y-coordinates column. If `None` is provided, the value
         set in `settings.DEFAULT_Y_COLUMN` will be taken.
+    columns : list of str, optional
+        List of column names to use. If `None` is provided, all columns will be
+        read.
     sep: str, optional
         Delimiter to use. If `None` is provided, the value set in `settings.DEFAULT_SEP`
         will be taken.
@@ -446,23 +430,46 @@ def read_csv(
     result : LandDataFrame
     """
     if read_csv_kwargs is None:
-        read_csv_kwargs = {}
+        _read_csv_kwargs = {}
+    else:
+        _read_csv_kwargs = read_csv_kwargs.copy()
+
+    # process columns args
+    if index_column is None:
+        index_column = settings.DEFAULT_INDEX_COLUMN
+    if x_column is None:
+        x_column = settings.DEFAULT_X_COLUMN
+    if y_column is None:
+        y_column = settings.DEFAULT_Y_COLUMN
+    # we are using "columns" instead of "usecols" in case we eventually want to use
+    # another backend, e.g., polars
+    if columns is not None:
+        # ensure that the index, x and y columns are included
+        columns = list(set(columns).union({index_column, x_column, y_column}))
+        _read_csv_kwargs["usecols"] = columns
+
+    if crs is None:
+        crs = CRS.from_string(settings.DEFAULT_CRS)
+    elif isinstance(crs, str):
+        crs = CRS.from_string(crs)
+    if res is None:
+        res = settings.DEFAULT_RES
+
     # remove the `sep` parameter from the kwargs
-    _read_csv_kwargs = read_csv_kwargs.copy()
     _read_csv_kwargs.pop("sep", None)
     if sep is None:
         sep = settings.DEFAULT_SEP
-    df = pd.read_csv(filepath_or_buffer, sep=sep, **read_csv_kwargs)
+    df = pd.read_csv(filepath_or_buffer, sep=sep, **_read_csv_kwargs)
 
     if df_init_kwargs is None:
         df_init_kwargs = {}
     return LandDataFrame(
         df,
-        crs=crs,
-        res=res,
         index_column=index_column,
         x_column=x_column,
         y_column=y_column,
+        crs=crs,
+        res=res,
         **df_init_kwargs,
     )
 
@@ -474,6 +481,7 @@ def load_dataset(
     url=None,
     retrieve_kwargs=None,
     which_member=None,
+    columns=None,
     **read_csv_kwargs,
 ):
     """
@@ -498,8 +506,13 @@ def load_dataset(
     which_member : int, optional
         When downloading a custom url with an unpacking processor, the index of the
         member to be extracted. Ignored if `dataset_key` is provided.
+    columns : list-like, optional
+        The columns to be read from the dataset. If `None` is provided and `dataset_key`
+        is not None, the columns set in `settings.DATASET_DICT` for the given
+        `dataset_key` will be taken. Otherwise, all columns will be read.
     **read_csv_kwargs : dict-like
-        Keyword arguments to be passed to `pandas.read_csv`.
+        Keyword arguments to be passed to `pandas.read_csv`. If both the `columns`
+        argument and a "columns" key are provided, the former will be taken.
 
     Returns
     -------
@@ -545,5 +558,9 @@ def load_dataset(
         filepath_or_buffer = pooch.retrieve(url, **retrieve_kwargs)
         if which_member is not None:
             filepath_or_buffer = filepath_or_buffer[which_member]
+
+    # process column arg
+    if columns is not None:
+        _read_csv_kwargs["columns"] = columns
 
     return read_csv(filepath_or_buffer, **_read_csv_kwargs)

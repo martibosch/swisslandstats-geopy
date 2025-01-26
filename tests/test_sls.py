@@ -66,6 +66,32 @@ class TestSwissLandStats(unittest.TestCase):
             # test crs
             assert isinstance(ldf.crs, CRS)
 
+        # try that setting an inexistent column as index should not raise a KeyError
+        # because it is caught, but it can raise a ValueError if the dataset has
+        # a non-empty default "columns" arg
+        if "columns" in dataset_item["read_csv_kwargs"]:
+            with pytest.raises(ValueError):
+                sls.load_dataset(dataset_key, index_column="inexistent_column")
+        else:
+            # the KeyError is caught and a warning is issued in the logs
+            sls.load_dataset(dataset_key, index_column="inexistent_column")
+
+        # try that filtering columns returns at most the same number of columns
+        assert (
+            sls.load_dataset(
+                dataset_key,
+                columns=[settings.DEFAULT_INDEX_COLUMN]
+                + [
+                    dataset_item["read_csv_kwargs"].get(coord_col, default)
+                    for coord_col, default in zip(
+                        ["x_column", "y_column"],
+                        [settings.DEFAULT_X_COLUMN, settings.DEFAULT_Y_COLUMN],
+                    )
+                ],
+            ).shape[1]
+            <= ldf.shape[1]
+        )
+
         # now test geometry
         # geopandas exports
         gser = ldf.get_geoseries()
