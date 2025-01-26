@@ -215,6 +215,10 @@ class TestSwissLandStats(unittest.TestCase):
 
 
 def test_logging():
+    # enable logging to both console and file to bump test coverage
+    settings.LOG_CONSOLE = True
+    settings.LOG_FILE = True
+
     utils.log("test a fake default message")
     utils.log("test a fake debug", level=lg.DEBUG)
     utils.log("test a fake info", level=lg.INFO)
