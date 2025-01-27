@@ -147,5 +147,6 @@
 ## 0.1 (25/10/2018)
 
 - initial release
-  \[v0.11.0\]: https://github.com/martibosch/swisslandstats-geopy/compare/v0.10.0...v0.11.0
-  \[v0.12.0\]: https://github.com/martibosch/swisslandstats-geopy/compare/v0.11.0...v0.12.0
+
+[v0.11.0]: https://github.com/martibosch/swisslandstats-geopy/compare/v0.10.0...v0.11.0
+[v0.12.0]: https://github.com/martibosch/swisslandstats-geopy/compare/v0.11.0...v0.12.0
