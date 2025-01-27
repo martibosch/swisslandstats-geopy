@@ -1,5 +1,35 @@
 # Change log
 
+## [v0.12.0] - 2025-01-27
+
+### :boom: BREAKING CHANGES
+
+- due to [`1f9e284`](https://github.com/martibosch/swisslandstats-geopy/commit/1f9e284a04aeac82fe8f94165d9345ebde707884) - load_dataset with pooch, support sls, statpop, bds, statent *(commit by [@martibosch](https://github.com/martibosch))*:
+
+  load_dataset with pooch, support sls, statpop, bds, statent
+
+- due to [`a781b0d`](https://github.com/martibosch/swisslandstats-geopy/commit/a781b0d7f961fcc3283524b1b6960d05c1b2f673) - columns arg for read_csv, load_dataset; defaults in read_csv *(commit by [@martibosch](https://github.com/martibosch))*:
+
+  columns arg for read_csv, load_dataset; defaults in read_csv
+
+- due to [`0f2be82`](https://github.com/martibosch/swisslandstats-geopy/commit/0f2be8235cb7c8f9bb2ccc35c6bdce4f47d48121) - sep priority to arg, read_csv_kwargs and then settings *(commit by [@martibosch](https://github.com/martibosch))*:
+
+  sep priority to arg, read_csv_kwargs and then settings
+
+### :sparkles: New Features
+
+- [`1f9e284`](https://github.com/martibosch/swisslandstats-geopy/commit/1f9e284a04aeac82fe8f94165d9345ebde707884) - load_dataset with pooch, support sls, statpop, bds, statent *(commit by [@martibosch](https://github.com/martibosch))*
+- [`a781b0d`](https://github.com/martibosch/swisslandstats-geopy/commit/a781b0d7f961fcc3283524b1b6960d05c1b2f673) - columns arg for read_csv, load_dataset; defaults in read_csv *(commit by [@martibosch](https://github.com/martibosch))*
+- [`0f2be82`](https://github.com/martibosch/swisslandstats-geopy/commit/0f2be8235cb7c8f9bb2ccc35c6bdce4f47d48121) - sep priority to arg, read_csv_kwargs and then settings *(commit by [@martibosch](https://github.com/martibosch))*
+
+### :zap: Performance Improvements
+
+- [`4e7e0d6`](https://github.com/martibosch/swisslandstats-geopy/commit/4e7e0d6997f4558fd822edb49eb4c5cbc0037eb2) - use gpd.points_from_xy to get geoseries *(commit by [@martibosch](https://github.com/martibosch))*
+
+### :white_check_mark: Tests
+
+- [`45c14ec`](https://github.com/martibosch/swisslandstats-geopy/commit/45c14ec5edbd6952310980f6761f26a325bfbf37) - enable logging to console and file to bump test coverage *(commit by [@martibosch](https://github.com/martibosch))*
+
 ## [v0.11.0] - 2024-10-24
 
 ### :boom: BREAKING CHANGES
@@ -118,3 +148,4 @@
 
 - initial release
   \[v0.11.0\]: https://github.com/martibosch/swisslandstats-geopy/compare/v0.10.0...v0.11.0
+  \[v0.12.0\]: https://github.com/martibosch/swisslandstats-geopy/compare/v0.11.0...v0.12.0
