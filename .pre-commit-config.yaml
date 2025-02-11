@@ -11,14 +11,14 @@ repos:
       - id: check-yaml
 
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.0
+    rev: v2.4.1
     hooks:
     - id: codespell
       types_or: [python, markdown, rst]
       additional_dependencies: [tomli]
 
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v4.1.0
+    rev: v4.2.1
     hooks:
       - id: commitizen
 
@@ -30,7 +30,7 @@ repos:
         types: ["ini", "toml", "yaml"]
 
   - repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.21 # Use the ref you want to point at
+    rev: 0.7.22 # Use the ref you want to point at
     hooks:
       - id: mdformat
         # Optionally add plugins
@@ -46,7 +46,7 @@ repos:
         args: ["-d relaxed"]
 
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.31.0
+    rev: 0.31.1
     hooks:
       - id: check-github-workflows
 
@@ -56,7 +56,7 @@ repos:
       - id: pyupgrade
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.3
+    rev: v0.9.6
     hooks:
       - id: ruff
         args: [ --fix ]
